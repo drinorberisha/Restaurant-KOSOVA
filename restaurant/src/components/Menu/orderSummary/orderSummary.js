@@ -8,85 +8,36 @@ function OrderSummary({
   onDelete,
   totalPrice,
 }) {
-  const orderItemStyle = {
-    color: "white",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "5px 0",
-    borderBottom: "1px solid #ddd",
-  };
-
-  const totalPriceStyle = {
-    marginTop: "10px",
-    fontWeight: "bold"
-  };
-
-  const buttonContainerStyle = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-
-  const deleteButtonStyle = {
-    marginLeft: "10px",
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "18px",
-    color: "red",
-  };
-
-  const buttonStyle = {
-    padding: "2px 8px",
-    margin: "0 5px",
-    cursor: "pointer",
-    fontSize: "16px",
-  };
-
-  const dividerStyle = {
-    verticalAlign: "middle",
-    margin: "0 0px",
-  };
-
-  const roundBoxStyle = {
-    border: "1px solid #ddd",
-    borderRadius: "15px",
-    padding: "10px",
-    marginTop: "10px",
-    marginBottom: "10px",
-    overflowY: "auto",
-    maxHeight: "190px",
-    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${background}')`,
-    backgroundAttachment: "fixed",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "0% -2.5%",
-  };
-
+    const customBgStyle = {
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${background}')`,
+        backgroundAttachment: "fixed",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "0% -2.5%",
+      };
   return (
-    <div style={{height:"40%"}}>
+    <div className="h-2/5 flex-grow-0">
       <div>Order Summary:</div>
-      <div style={roundBoxStyle}>
+      <div className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto max-h-56 bg-cover bg-no-repeat bg-fixed bg-[url('/background.jpg')] bg-center bg-blend-darken" style={customBgStyle}>
         {orderItems.map((item, index) => (
-          <div key={index} style={orderItemStyle}>
+          <div key={index} className="text-white flex justify-between items-center py-1 border-b border-gray-300">
             {item.name} - {item.quantity} items - {item.price}
-            <div style={buttonContainerStyle}>
-              <button style={buttonStyle} onClick={() => onDecrement(item)}>
+            <div className="flex items-center justify-center">
+              <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onDecrement(item)}>
                 -
               </button>
-              <span style={dividerStyle}>/</span>
-              <button style={buttonStyle} onClick={() => onIncrement(item)}>
+              <span className="align-middle mx-1">/</span>
+              <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onIncrement(item)}>
                 +
               </button>
-              <button style={deleteButtonStyle} onClick={() => onDelete(item)}>
+              <button className="ml-2.5 bg-transparent border-none cursor-pointer text-lg text-red-500" onClick={() => onDelete(item)}>
                 🗑️
               </button>
             </div>
           </div>
         ))}
       </div>
-      <div style={totalPriceStyle}>Total price: {totalPrice}€</div>
+      <div className="mt-2.5 font-bold">Total price: {totalPrice}€</div>
     </div>
   );
 }

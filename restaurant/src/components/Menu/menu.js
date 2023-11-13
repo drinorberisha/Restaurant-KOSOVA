@@ -3,15 +3,6 @@ import MenuList from "./menuList/menuList";
 import MenuItemDetail from "./listItems/listItems";
 import OrderSummary from "./orderSummary/orderSummary";
 
-const menuContainerStyle = {
-  backgroundColor: "#f6f6f6",
-  padding: "10px",
-  borderRadius: "5px",
-  height: "100%",
- 
-  display: "flex",
-  flexDirection: "column",
-};
 const Menu = ({
   selectedItem,
   onSelectItem,
@@ -24,7 +15,7 @@ const Menu = ({
   calculateTotalPrice,
 }) => {
   return (
-    <div style={menuContainerStyle}>
+    <div className="bg-gray-100 p-2.5 rounded-md h-full flex flex-col">
       <MenuList onSelectItem={onSelectItem} selectedItem={selectedItem} />
       <MenuItemDetail item={selectedItem} onAddToOrder={onAddToOrder} />
       <OrderSummary

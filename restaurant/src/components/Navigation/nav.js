@@ -2,56 +2,11 @@ import React, { useState, useEffect } from "react";
 import background from "../../../public/nav.jpeg";
 import logo from "../../../public/logo123.jpg";
 import NavbarPin from "./navPin";
-import tableImage from "../../../public/Tables.png";
-import inventoryImage from "../../../public/Inventory.png";
+import Tables from "../../../public/Tables.png"
+import Inventory from "../../../public/Inventory.png";
 import Link from "next/link";
 import { useRouter } from "next/router";
-const styles = {
-  nav: {
-    position: "relative",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "gray",
-    backgroundImage: `url('${background}')`,
-    padding: "17px 20px",
-  },
-  logo: {
-    position:"absolute",
-    left:"50%",
-    display: "flex",
-    fontWeight: "bold",
-    fontSize: "20px",
-    alignItems:"center",
 
-  },
-  profileSection: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-  },
-  navbarContainer: {
-    position: "absolute",
-    top: "120%", // Move to the center vertically
-    right: "28%", // Move to the center horizontally
-    transform: "translate(-50%, -50%)", // Adjust for its own dimensions
-    display: "flex",
-    gap: "20px",
-  },
-  profilePic: {
-    width: "40px",
-    height: "40px",
-    borderRadius: "50%",
-    background: "white",
-  },
-  dateinfo:{
-    display:"flex",
-    position:"relative",
-    left:"40%",
-    width:"300px",
-    color:"white",
-  },
-};
 
 const Nav = () => {
   const router = useRouter();
@@ -63,19 +18,19 @@ const Nav = () => {
 
 
   const authenticatedNav = [
-    { name: "Tavolina", href: "/", current: true, image: tableImage },
+    { name: "Tavolina", href: "/", current: true, image: Tables },
     {
       name: "Magazina",
       href: "/magazina",
       current: false,
-      image: inventoryImage,
+      image: Inventory,
     },
   ];
 
-  const publicNav = [
-    { name: "Login", href: "/", current: true },
-    { name: "Register", href: "/register", current: false },
-  ];
+//   const publicNav = [
+//     { name: "Login", href: "/", current: true },
+//     { name: "Register", href: "/register", current: false },
+//   ];
 //   const navigation = isLoggedIn ? authenticatedNav : publicNav;
      const navigation =  authenticatedNav
 
@@ -92,7 +47,7 @@ const Nav = () => {
 
   return (
     <>
-      <div className="relative flex justify-between items-center bg-gray-500 p-4 bg-[url('/nav.jpeg')]">
+      <nav className="relative flex justify-between items-center bg-gray-500 p-4 bg-[url('/nav.jpeg')]">
   <div className="absolute top-[120%] right-[28%] -translate-x-1/2 -translate-y-1/2 flex gap-5">
     {/* Navigation Pins */}
     {navigation.map((item) => (
@@ -119,7 +74,7 @@ const Nav = () => {
       </Link>
     )}
   </div>
-</div>
+</nav>
     </>
   );
 };

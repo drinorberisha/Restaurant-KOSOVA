@@ -28,71 +28,24 @@ function MenuList({ onSelectItem, selectedItem }) {
     }
   }, [searchInput, onSelectItem, filteredMenuItems, wasUserSelected]);
 
-  const searchBarStyle = {
-    width: "100%",
-    padding: "10px",
-    paddingInlineEnd: "40px",
-    fontSize: "16px",
-    boxSizing: "border-box",
-  };
-
-  const menuItemStyle = {
-    padding: "8px",
-    cursor: "pointer",
-    border: "1px solid #ddd",
-    transition: "background-color 0.3s",
-    borderRadius: "4px",
-    whiteSpace: "nowrap", // Prevents text wrapping
-    overflow: "hidden", // Keeps the content within the div
-    textOverflow: "ellipsis", // Adds an ellipsis if the text is too long
-    height: "59px", // Adjust this value as needed
-  };
-
-  const menuItemSelectedStyle = {
-    backgroundColor: "#eee",
-    fontWeight: "bold",
-  };
-
-  const menuContainerStyle = {
-    display: "grid",
-    gridTemplateColumns: "repeat(5, minmax(min-content, 1fr))",
-    gap: "6px",
-    overflowY: "auto",
-    alignItems: "start",
-    height: "75%",
-  };
-
-  const containerStyle = {
-    height: "35%",
-    borderBottom: "1.5px solid #000",
-  };
 
   return (
-    <div style={containerStyle}>
-      <div style={{ position: "relative", marginBottom: "10px",height:"25%" }}>
+    <div className="h-1/3 border-b-2 border-black flex-grow-0">
+      <div className="relative mb-2.5 h-1/5">
         <input
-          style={searchBarStyle}
+          className="w-full p-2.5 text-lg box-border"
           placeholder="Search menu..."
           value={searchInput}
           onChange={handleSearchChange}
         />
         <button
-          style={{
-            position: "absolute",
-            right: "10px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            fontSize: "20px",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-          }}
+          className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-2xl bg-transparent border-none cursor-pointer"
         >
           🔍
         </button>
       </div>
       {filteredMenuItems.length > 0 ? (
-        <div style={menuContainerStyle}>
+        <div className="grid grid-cols-5 gap-1.5 overflow-y-auto align-start h-3/4">
           {filteredMenuItems.map((item) => (
             <div
               key={item.id}
@@ -100,23 +53,14 @@ function MenuList({ onSelectItem, selectedItem }) {
                 setWasUserSelected(true);
                 onSelectItem(item);
               }}
-              style={{
-                ...menuItemStyle,
-                ...(selectedItem && selectedItem.id === item.id
-                  ? menuItemSelectedStyle
-                  : {}),
-              }}
+              className={`p-2 cursor-pointer border border-gray-300 transition-all duration-300 rounded whitespace-nowrap overflow-hidden text-ellipsis h-14 ${selectedItem && selectedItem.id === item.id ? "bg-gray-200 font-bold" : ""}`}
             >
               <span>{item.icon}</span> {item.name}
             </div>
           ))}
         </div>
       ) : (
-        <div
-          style={{
-            textAlign: "center",
-          }}
-        >
+        <div className="text-center">
           No menu item results...
         </div>
       )}

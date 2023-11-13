@@ -75,7 +75,7 @@ function Home() {
     items.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
-    <div className="h-fit">
+    <div className="min-h-screen min-w-full bg-cover bg-no-repeat bg-center bg-login-view overflow-hidden">
       <Nav />
       <div className="grid grid-cols-2 gap-5 p-2.5 max-h-full">
         <div className="h-full">
