@@ -1,0 +1,4 @@
+// Drinor
+/home/madanaj/Development/Github/abon-backend/restaurant.db
+// Valdrin
+/Users/valdrin/Desktop/abon-backend/restaurant.db
