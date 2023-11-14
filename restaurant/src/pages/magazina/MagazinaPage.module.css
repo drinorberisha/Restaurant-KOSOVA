@@ -1,0 +1,19 @@
+/* MagazinaPage.module.css */
+.background {
+    background-image: url('/loginView.jpg');
+    overflow: hidden;
+    display: flex;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+.matrix {
+    background-image: url('/menu1.jpg');
+    width: 100%; /* Full width of the container */
+    height: 100%; /* Full height of the container */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+
+}
+  
