@@ -8,17 +8,11 @@ function OrderSummary({
   onDelete,
   totalPrice,
 }) {
-    const customBgStyle = {
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${background}')`,
-        backgroundAttachment: "fixed",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "0% -2.5%",
-      };
+
   return (
-    <div className="h-2/5 flex-grow-0">
+    <div className="h-[40%]">
       <div>Order Summary:</div>
-      <div className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto max-h-56 bg-cover bg-no-repeat bg-fixed bg-[url('/background.jpg')] bg-center bg-blend-darken" style={customBgStyle}>
+      <div className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto max-h-56 bg-cover bg-no-repeat bg-fixed bg-[url('/background.jpg')] bg-center bg-blend-darken">
         {orderItems.map((item, index) => (
           <div key={index} className="text-white flex justify-between items-center py-1 border-b border-gray-300">
             {item.name} - {item.quantity} items - {item.price}

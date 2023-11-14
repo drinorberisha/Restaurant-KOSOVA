@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require("cors");
 const userRoutes = require('./routes/userRoutes');
-const db = require('./models/db'); // Importing the separated database connection
+const db = require('./models/db'); 
 
 const app = express();
 app.use(cors());

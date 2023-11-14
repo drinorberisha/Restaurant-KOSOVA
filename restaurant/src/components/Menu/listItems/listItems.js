@@ -13,7 +13,7 @@ function MenuItemDetail({ item, onAddToOrder }) {
   };
 
   return (
-    <div className="h-2/7 border-b-2 border-black flex-grow">
+    <div className="h-[23%] border-b-2 border-black ">
       <div>{item ? item.name : "Menu Item"} types:</div>
       {item ? (
         <div className="grid grid-cols-5 gap-1.5 overflow-y-auto align-start mb-1">

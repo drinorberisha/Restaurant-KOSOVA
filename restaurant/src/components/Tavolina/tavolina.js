@@ -7,7 +7,7 @@ function Tables({ selectedTable, onSelectTable }) {
   const tables = new Array(16).fill({});
 
   return (
-    <div className="flex flex-col h-full mt-[9.1%]">
+    <div className="flex flex-col h-full mt-[6.1%]">
       <div className="flex justify-between items-center p-5 bg-white bg-cover bg-center bg-no-repeat rounded-t-lg bg-[url('/bg2.jpg')]">
         <div className="relative flex-1">
           <input
@@ -62,7 +62,7 @@ function Tables({ selectedTable, onSelectTable }) {
         ))}
       </div>
 
-      <div className="p-5 bg-white bg-cover bg-center bg-no-repeat rounded-b-lg bg-[url('/bg2.jpg')]">
+      <div className="p-3 bg-white bg-cover bg-center bg-no-repeat rounded-b-lg bg-[url('/bg2.jpg')]">
         {/* Insert footer content here */}
       </div>
     </div>

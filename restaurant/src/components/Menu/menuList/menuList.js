@@ -30,8 +30,8 @@ function MenuList({ onSelectItem, selectedItem }) {
 
 
   return (
-    <div className="h-1/3 border-b-2 border-black flex-grow-0">
-      <div className="relative mb-2.5 h-1/5">
+    <div className="h-[37%] border-b-2 border-black ">
+      <div className="relative mb-0 h-1/5">
         <input
           className="w-full p-2.5 text-lg box-border"
           placeholder="Search menu..."
@@ -39,7 +39,7 @@ function MenuList({ onSelectItem, selectedItem }) {
           onChange={handleSearchChange}
         />
         <button
-          className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-2xl bg-transparent border-none cursor-pointer"
+          className="absolute right-2.5 top-[40%] transform -translate-y-1/2 text-2xl bg-transparent border-none cursor-pointer"
         >
           🔍
         </button>

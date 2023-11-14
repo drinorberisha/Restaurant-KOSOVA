@@ -41,14 +41,14 @@ const Nav = () => {
   const logoutFunc = () => {
     localStorage.setItem("isActive", false);
     localStorage.removeItem("userRole");
-    router.push("/");
+    router.push("/auth/login");
     window.location.reload();
   };
 
   return (
     <>
       <nav className="relative flex justify-between items-center bg-gray-500 p-4 bg-[url('/nav.jpeg')]">
-  <div className="absolute top-[120%] right-[28%] -translate-x-1/2 -translate-y-1/2 flex gap-5">
+  <div className="absolute top-[80%] right-[30%] -translate-x-1/2 -translate-y-1/2 flex gap-5">
     {/* Navigation Pins */}
     {navigation.map((item) => (
       <NavbarPin

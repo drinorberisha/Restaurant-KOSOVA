@@ -33,6 +33,6 @@ export const apiCall = async (
   }
 };
 
-export const loginUser = async (email, password) => {
-  return await apiCall("users", "login", "POST", { email, password });
+export const loginUser = async ( password) => {
+  return await apiCall("check-password", "", "POST", { password });
 };
