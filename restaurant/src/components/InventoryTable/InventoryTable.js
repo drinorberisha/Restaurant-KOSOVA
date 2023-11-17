@@ -1,6 +1,13 @@
-import React , {useState} from 'react';
+import React , {useState, useEffect} from 'react';
 
 const InventoryTable = () => {
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    // Access localStorage only after the component has mounted
+    const storedUserRole = localStorage.getItem('userRole');
+    setUserRole(storedUserRole);
+  }, []);
   const initialInventoryItems = [
     { id: 1, itemName: 'Margarita', category: 'Food', subcategory: 'Pizza', currentCount: 20, minimumRequired: 5 },
     { id: 2, itemName: 'Diavolo', category: 'Food', subcategory: 'Pizza', currentCount: 15, minimumRequired: 5 },
@@ -42,10 +49,10 @@ const InventoryTable = () => {
   };
 
 
-  const [userRole, setUserRole] = useState("Manager");
 
   // Function to determine if the user can adjust stock
   const canAdjustStock = () => {
+    if (!userRole) return false;
     // Define which roles are allowed to adjust stock
     const allowedRoles = ["Manager", "Owner"];
     return allowedRoles.includes(userRole);
