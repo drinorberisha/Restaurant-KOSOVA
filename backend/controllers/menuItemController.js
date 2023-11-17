@@ -4,7 +4,10 @@ const db = require('../models/db'); // Adjust path if necessary
 
 exports.addMenuItem = async (req, res) => {
     try {
-        const { item_name, price } = req.body;
+        const { item_name, price } = req.body.data;
+        if (!item_name || price == null) {
+            return res.status(400).json({ message: 'Item name and price are required' });
+        }
         const newItem = await db('MenuItems').insert({ item_name, price });
         res.status(201).json({ id: newItem[0], item_name, price });
     } catch (error) {

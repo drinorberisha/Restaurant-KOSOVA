@@ -15,7 +15,7 @@ router.post('/menuitems/add',
 
 router.delete('/menuitems/delete/:itemId', menuItemController.deleteMenuItem);
 
-
+router.get('/inventory/getItems', inventoryController.getInventoryItems);
 router.put('/menuitems/edit/:itemId', menuItemController.editMenuItem);
 
 // Inventory routes

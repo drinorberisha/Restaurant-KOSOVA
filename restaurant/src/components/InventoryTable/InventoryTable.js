@@ -1,23 +1,46 @@
 import React , {useState, useEffect} from 'react';
+import AddProductForm from './AddProductForm';
+import { fetchInventoryItems } from '@/utils/api';
 
 const InventoryTable = () => {
   const [userRole, setUserRole] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false); // State to control form visibility
+
+  const [inventoryItems, setInventoryItems] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('All');
+
+
+
+
+  useEffect(() => {
+    const loadInventoryItems = async () => {
+      try {
+        const fetchedItems = await fetchInventoryItems();
+        console.log("Fetched items:", fetchedItems); // Log to check data
+        setInventoryItems(fetchedItems);
+      } catch (error) {
+        console.error('Error fetching inventory items:', error);
+        // Handle error (show error message, etc.)
+      }
+    };
+  
+    loadInventoryItems();
+  }, []);
 
   useEffect(() => {
     // Access localStorage only after the component has mounted
     const storedUserRole = localStorage.getItem('userRole');
     setUserRole(storedUserRole);
   }, []);
-  const initialInventoryItems = [
-    { id: 1, itemName: 'Margarita', category: 'Food', subcategory: 'Pizza', currentCount: 20, minimumRequired: 5 },
-    { id: 2, itemName: 'Diavolo', category: 'Food', subcategory: 'Pizza', currentCount: 15, minimumRequired: 5 },
-    { id: 3, itemName: 'Coke', category: 'Drinks', subcategory: 'Soft Drinks', currentCount: 30, minimumRequired: 10 },
-    { id: 4, itemName: 'Cheesecake', category: 'Desserts', subcategory: 'Cake', currentCount: 15, minimumRequired: 5 },
-    // More items...
-  ];
-  const [inventoryItems, setInventoryItems] = useState(initialInventoryItems);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('All');
+  // const initialInventoryItems = [
+  //   { id: 1, itemName: 'Margarita', category: 'Food', subcategory: 'Pizza', currentCount: 20, minimumRequired: 5 },
+  //   { id: 2, itemName: 'Diavolo', category: 'Food', subcategory: 'Pizza', currentCount: 15, minimumRequired: 5 },
+  //   { id: 3, itemName: 'Coke', category: 'Drinks', subcategory: 'Soft Drinks', currentCount: 30, minimumRequired: 10 },
+  //   { id: 4, itemName: 'Cheesecake', category: 'Desserts', subcategory: 'Cake', currentCount: 15, minimumRequired: 5 },
+  
+  // ];
+
   // Function to adjust stock
   const adjustStock = (itemId, adjustment) => {
     const updatedItems = inventoryItems.map(item => {
@@ -40,6 +63,7 @@ const InventoryTable = () => {
 
   const filteredItems = inventoryItems.filter(item => {
     return (
+      item.itemName && 
       (filterCategory === 'All' || item.category === filterCategory) &&
       item.itemName.toLowerCase().includes(searchTerm)
     );
@@ -54,8 +78,14 @@ const InventoryTable = () => {
   const canAdjustStock = () => {
     if (!userRole) return false;
     // Define which roles are allowed to adjust stock
-    const allowedRoles = ["Manager", "Owner"];
+    const allowedRoles = ["manager", "admin"];
     return allowedRoles.includes(userRole);
+  };
+
+
+
+  const handleAddClick = () => {
+    setShowAddForm(true); // Show the form
   };
   return (
     <>
@@ -73,6 +103,7 @@ const InventoryTable = () => {
           <option value="Desserts">Desserts</option>
           {/* Add more categories as needed */}
         </select>
+        <button></button>
       </div>
     <table className="min-w-full table-auto">
       <thead>
@@ -88,16 +119,18 @@ const InventoryTable = () => {
       <tbody>
         {inventoryItems.map(item => (
             <tr key={item.id} className={isStockLow(item) ? "bg-red-100" : ""}>
-            <td className="border px-4 py-2">{item.itemName}</td>
+            <td className="border px-4 py-2">{item.item_name}</td>
             <td className="border px-4 py-2">{item.category}</td>
             <td className="border px-4 py-2">{item.subcategory}</td>
-            <td className="border px-4 py-2">{item.currentCount}</td>
-            <td className="border px-4 py-2">{item.minimumRequired}</td>
+            <td className="border px-4 py-2">{item.current_count}</td>
+            <td className="border px-4 py-2">{item.price}</td>
+
+            <td className="border px-4 py-2">{item.minimum_required}</td>
             <td className="border px-4 py-2 ">
             {canAdjustStock() && (
                   <>
-              <button className="border border-black mr-2"onClick={() => adjustStock(item.id, 1)}>+</button>
-              <button onClick={() => adjustStock(item.id, -1)}>-</button>
+              <button className="border border-black mr-4"onClick={() => adjustStock(item.id, 1)}>+</button>
+              <button className="border border-black "onClick={() => adjustStock(item.id, -1)}>-</button>
               </>
               )}
             </td>
@@ -105,6 +138,13 @@ const InventoryTable = () => {
         ))}
       </tbody>
     </table>
+    {userRole === 'admin' && (
+        <button onClick={handleAddClick} className="bg-blue-500 text-white p-2 rounded">
+          Add New Product
+        </button>
+      )}
+
+      {showAddForm && <AddProductForm setShowAddForm={setShowAddForm} />}
     </>
   );
 };

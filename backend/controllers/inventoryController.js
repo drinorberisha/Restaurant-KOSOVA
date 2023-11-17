@@ -12,6 +12,17 @@ exports.addInventoryItem = async (req, res) => {
         res.status(500).json({ message: 'Error adding inventory item' });
     }
 };
+exports.getInventoryItems = async (req, res) => {
+    try {
+        const items = await db.select('*').from('Inventory')
+            .join('MenuItems', 'Inventory.item_id', '=', 'MenuItems.item_id');
+        res.json(items);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error fetching inventory items');
+    }
+};
+
 
 exports.editInventoryItem = async (req, res) => {
     try {

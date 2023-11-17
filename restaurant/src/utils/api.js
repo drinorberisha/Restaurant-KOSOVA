@@ -36,3 +36,10 @@ export const apiCall = async (
 export const loginUser = async ( password) => {
   return await apiCall("check-password", "", "POST", { password });
 };
+export const AddProduct = async (data) => {
+  return await apiCall("menuitems", "add", "POST", { data });
+};
+export const fetchInventoryItems = async () => {
+  return await apiCall('inventory', 'getItems', 'GET');
+};
+
