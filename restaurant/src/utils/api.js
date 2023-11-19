@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const backendUrl = process.env.NEXT_PUBLIC_API_URL;
+const backendUrl = "http://localhost:3010";
 
 export const apiCall = async (
   endpoint,
