@@ -14,8 +14,20 @@ exports.addInventoryItem = async (req, res) => {
 };
 exports.getInventoryItems = async (req, res) => {
     try {
-        const items = await db.select('*').from('Inventory')
+        // Select specific columns including category and subcategory
+        const items = await db.select(
+                'Inventory.inventory_id',
+                'Inventory.item_id',
+                'Inventory.current_count',
+                'Inventory.minimum_required',
+                'MenuItems.item_name',
+                'MenuItems.price',
+                'MenuItems.category',
+                'MenuItems.subcategory' 
+            )
+            .from('Inventory')
             .join('MenuItems', 'Inventory.item_id', '=', 'MenuItems.item_id');
+
         res.json(items);
     } catch (error) {
         console.error(error);
@@ -27,11 +39,21 @@ exports.getInventoryItems = async (req, res) => {
 exports.editInventoryItem = async (req, res) => {
     try {
         const { inventoryId } = req.params;
-        const { current_count, minimum_required } = req.body;
-        await db('Inventory').where('inventory_id', inventoryId).update({ current_count, minimum_required });
+        const { updates } = req.body; // Destructuring to get the updates object
+
+        // Check if there are any updates provided
+        if (!updates || Object.keys(updates).length === 0) {
+            return res.status(400).json({ message: 'No updates provided' });
+        }
+
+        // Perform the update operation
+        await db('Inventory').where('inventory_id', inventoryId).update(updates);
         res.status(200).json({ message: 'Inventory item updated' });
+
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error updating inventory item' });
     }
 };
+

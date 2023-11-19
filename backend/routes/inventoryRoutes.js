@@ -16,10 +16,10 @@ router.post('/menuitems/add',
 router.delete('/menuitems/delete/:itemId', menuItemController.deleteMenuItem);
 
 router.get('/inventory/getItems', inventoryController.getInventoryItems);
-router.put('/menuitems/edit/:itemId', menuItemController.editMenuItem);
+router.put('/menuitems/:itemId', menuItemController.editMenuItem);
 
 // Inventory routes
 router.post('/inventory/add', inventoryController.addInventoryItem);
-router.put('/inventory/edit/:inventoryId', inventoryController.editInventoryItem);
+router.put('/inventory/:inventoryId', inventoryController.editInventoryItem);
 
 module.exports = router;

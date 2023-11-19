@@ -34,12 +34,22 @@ export const apiCall = async (
 };
 
 export const loginUser = async ( password) => {
-  return await apiCall("check-password", "", "POST", { password });
+  return await apiCall("check-password", "",  "POST", { password });
 };
 export const AddProduct = async (data) => {
   return await apiCall("menuitems", "add", "POST", { data });
 };
 export const fetchInventoryItems = async () => {
   return await apiCall('inventory', 'getItems', 'GET');
+};
+
+export const updateInventoryItem = async (inventoryId, updates) => {
+  console.log(inventoryId,updates);
+return await apiCall("inventory", inventoryId ,"PUT", {updates});
+};
+
+
+export const updateMenuItem = async (itemId, updates) => {
+  return await apiCall("menuitems", itemId, "PUT", updates);
 };
 

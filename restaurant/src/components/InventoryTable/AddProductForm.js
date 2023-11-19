@@ -11,8 +11,8 @@ const AddProductForm = ({ setShowAddForm }) => {
     item_name: '',
     category: '',
     subcategory: '',
-    currentCount: 0,
-    minimumRequired: 0,
+    current_count: 0,
+    minimum_required: 0,
     price: 0,
   });
 
@@ -74,23 +74,14 @@ const AddProductForm = ({ setShowAddForm }) => {
           />
           <input
             type="number"
-            name="currentCount"
-            value={formData.currentCount}
+            name="current_count"
+            value={formData.current_count}
             onChange={handleInputChange}
             placeholder="Current Count"
             min="0"
             required
           />
-          <input
-            type="number"
-            name="minimumRequired"
-            value={formData.minimumRequired}
-            onChange={handleInputChange}
-            placeholder="Minimum Required"
-            min="0"
-            required
-          />
-          <input
+             <input
             type="number"
             name="price"
             value={formData.price}
@@ -100,6 +91,16 @@ const AddProductForm = ({ setShowAddForm }) => {
             step="0.01"
             required
           />
+          <input
+            type="number"
+            name="minimum_required"
+            value={formData.minimum_required}
+            onChange={handleInputChange}
+            placeholder="Minimum Required"
+            min="0"
+            required
+          />
+       
           <button type="submit">Add Product</button>
           <button type="button" onClick={handleCancel}>Cancel</button>
         </form>

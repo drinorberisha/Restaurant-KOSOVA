@@ -4,17 +4,28 @@ const db = require('../models/db'); // Adjust path if necessary
 
 exports.addMenuItem = async (req, res) => {
     try {
-        const { item_name, price } = req.body.data;
+        const { item_name, price, category, subcategory } = req.body.data;
         if (!item_name || price == null) {
-            return res.status(400).json({ message: 'Item name and price are required' });
+            return res.status(400).json({ message: 'Item name, price, category, and subcategory are required' });
         }
-        const newItem = await db('MenuItems').insert({ item_name, price });
-        res.status(201).json({ id: newItem[0], item_name, price });
+        const newItem = await db('MenuItems').insert({ item_name, price, category, subcategory });
+        const newItemId = newItem[0];
+
+        // Add corresponding entry in Inventory table
+        await db('Inventory').insert({
+            item_id: newItemId,
+            current_count: current_count,
+            minimum_required: minimum_required
+        });
+
+        res.status(201).json({ id: newItemId, item_name, price, category, subcategory });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error adding menu item' });
     }
 };
+
+
 
 exports.deleteMenuItem = async (req, res) => {
     try {
