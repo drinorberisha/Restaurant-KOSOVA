@@ -9,7 +9,7 @@ import axios from "axios";
 import { loginUser } from "@/utils/api";
 
 const LoginPage = () => {
-  const [inputValue, setInputValue] = useState(""); // State to hold the input value
+  const [inputValue, setInputValue] = useState(""); 
   const router = useRouter();
  
   const checkPassword = async (password) => {
