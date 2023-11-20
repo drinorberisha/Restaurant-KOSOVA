@@ -1,11 +1,28 @@
-import React from "react";
+import React ,{useEffect, useState}from "react";
 import tableImage from "../../../public/Tables.png";
+import { fetchAllTableIds, fetchAllTables } from "@/utils/api"; 
 import backgroundImage from "../../../public/bg2.jpg";
 import Image from "next/image";
 
-function Tables({ selectedTable, onSelectTable }) {
-  const tables = new Array(16).fill({});
+function Tables({ selectedTable, onSelectTable , tableTotals}) {
+  const [tables, setTables] = useState([]);
+  useEffect(() => {
+    const fetchTables = async () => {
+      try {
+        const fetchedTables = await fetchAllTables();
+        const tableNumber = fetchedTables.table_number;
+        setTables(fetchedTables);
+      } catch (error) {
+        console.error('Error fetching tables:', error);
+      }
+    };
 
+    fetchTables();
+  }, []);
+
+  const handleSelectTable = (tableNumber) => {
+    onSelectTable(tableNumber); 
+  };
   return (
     <div className="flex flex-col h-full mt-[6.1%]">
       <div className="flex justify-between items-center p-5 bg-white bg-cover bg-center bg-no-repeat rounded-t-lg bg-[url('/bg2.jpg')]">
@@ -42,11 +59,11 @@ function Tables({ selectedTable, onSelectTable }) {
       </div>
 
       <div className="grid grid-cols-4 gap-5 p-5 overflow-y-auto bg-black bg-opacity-60">
-        {tables.map((table, index) => (
+      {tables.map((table) => (
           <div
-            key={index}
-            className={`text-center ${index === selectedTable ? "text-black bg-gray-300" : "text-white"} rounded-lg p-1.5`}
-            onClick={() => onSelectTable(index)}
+            key={table.table_id}
+            className={`text-center ${table.table_number === selectedTable ? "text-black bg-gray-300" : "text-white"} rounded-lg p-1.5`}
+            onClick={() => onSelectTable(table.table_number)}
           >
             <Image
               src={tableImage}
@@ -55,9 +72,8 @@ function Tables({ selectedTable, onSelectTable }) {
               height={75}
               className="w-18 h-18 rounded-full mx-auto"
             />
-            
-            <div>Table {index + 1} - 3€</div>
-            <div>Waiter Name</div>
+            <div>Table {table.table_number} -Total: {tableTotals[table.table_number] || 0}€</div>
+            <div>Status: {table.status}</div>
           </div>
         ))}
       </div>

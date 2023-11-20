@@ -1,39 +1,37 @@
 import React, { useState, useEffect } from "react";
 
-function MenuItemDetail({ item, onAddToOrder }) {
+function MenuItemDetail({ category, subcategory, menuItems, onAddToOrder }) {
   const [selectedType, setSelectedType] = useState(null);
 
-  useEffect(() => {
-    setSelectedType(null);
-  }, [item]);
+  // useEffect(() => {
+  //   setSelectedType(null);
+  // }, [item]);
 
-  const handleSelectAndAddToOrder = (type) => {
-    setSelectedType(type);
-    onAddToOrder(type);
+  const handleSelectAndAddToOrder = (item) => {
+    onAddToOrder(item);
   };
-
+  const filteredItems = menuItems.filter(item => item.subcategory === subcategory);
   return (
-    <div className="h-[23%] border-b-2 border-black ">
-      <div>{item ? item.name : "Menu Item"} types:</div>
-      {item ? (
+    <div className="h-[23%] border-b-2 border-l-2 border-black ">
+    {subcategory ? (
+      <div>
+        <div>{category}:{subcategory} </div>
         <div className="grid grid-cols-5 gap-1.5 overflow-y-auto align-start mb-1">
-          {item.types.map((type) => (
+          {filteredItems.map((item) => (
             <div
-              key={type.name}
-              onClick={() => handleSelectAndAddToOrder(type)}
-              className={`p-1 cursor-pointer border border-gray-300 transition-all duration-300 rounded h-11 ${selectedType && selectedType.name === type.name ? "bg-gray-200 font-bold" : ""}`}
-            >
-              {type.name} - {type.price}
+              key={item.item_id}
+              onClick={() => handleSelectAndAddToOrder(item)}
+              className="p-1 cursor-pointer border border-gray-300 transition-all duration-300 rounded h-11">
+              {item.item_name} - {item.price}€
             </div>
           ))}
         </div>
-      ) : (
-        <div className="text-center">
-          No menu item type results...
-        </div>
-      )}
-    </div>
-  );
+      </div>
+    ) : (
+      <div className="text-center">Select a subcategory...</div>
+    )}
+  </div>
+);
 }
 
 export default MenuItemDetail;

@@ -13,7 +13,7 @@ router.post('/menuitems/add',
    checkUserRole(['admin', 'manager']),
   menuItemController.addMenuItem);
 
-router.delete('/menuitems/delete/:itemId', menuItemController.deleteMenuItem);
+router.delete('/menuitems/:itemId', menuItemController.deleteMenuItem);
 
 router.get('/inventory/getItems', inventoryController.getInventoryItems);
 router.put('/menuitems/:itemId', menuItemController.editMenuItem);

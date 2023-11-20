@@ -7,10 +7,11 @@ function OrderSummary({
   onDecrement,
   onDelete,
   totalPrice,
+  onCreateOrder
 }) {
 
   return (
-    <div className="h-[40%]">
+    <div className="h-[40%] border-b-2  border-l-2 border-black">
       <div>Order Summary:</div>
       <div className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto max-h-56 bg-cover bg-no-repeat bg-fixed bg-[url('/background.jpg')] bg-center bg-blend-darken">
         {orderItems.map((item, index) => (
@@ -32,6 +33,7 @@ function OrderSummary({
         ))}
       </div>
       <div className="mt-2.5 font-bold">Total price: {totalPrice}€</div>
+      <button className="pay-button" onClick={onCreateOrder}>Pay</button>
     </div>
   );
 }

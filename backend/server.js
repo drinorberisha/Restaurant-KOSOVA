@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 const cors = require("cors");
 const userRoutes = require('./routes/userRoutes');
 const inventoryRoutes = require('./routes/inventoryRoutes');
+const orderRoutes = require ('./routes/orderRoutes');
+const tableRoutes = require ('./routes/tableRoutes');
+
 const db = require('./models/db'); 
 
 const app = express();
@@ -19,6 +22,10 @@ app.use(bodyParser.json());
 
 app.use('/api', userRoutes); 
 app.use('/api', inventoryRoutes);
+app.use('/api', orderRoutes);
+app.use('/api', tableRoutes);
+
+
 
 const PORT = 3010;
 // Test DB connectio

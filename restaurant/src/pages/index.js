@@ -12,6 +12,8 @@ function Home() {
   const [orderSummaries, setOrderSummaries] = useState(initialOrders);
   const [selectedTable, setSelectedTable] = useState(0);
 
+  const [tableTotals, setTableTotals] = useState({});
+
   const handleIncrement = (item) => {
     const updatedSummaries = [...orderSummaries];
     const updatedOrders = updatedSummaries[selectedTable].map((orderItem) =>
@@ -74,6 +76,11 @@ function Home() {
   const calculateTotalPrice = (items) =>
     items.reduce((total, item) => total + item.price * item.quantity, 0);
 
+
+    const handleSelectTable = (tableNumber) => {
+      setSelectedTable(tableNumber);
+      // Additional logic if needed
+    };
   return (
     <div className="min-h-screen min-w-full bg-cover bg-no-repeat bg-center bg-login-view overflow-hidden">
       <Nav />
@@ -83,18 +90,20 @@ function Home() {
             selectedItem={selectedItem}
             onSelectItem={setSelectedItem}
             orderSummaries={orderSummaries}
-            selectedTable={selectedTable}
+            selectedTableNumber={selectedTable}
             onIncrement={handleIncrement}
             onDecrement={handleDecrement}
             onDelete={handleDeleteOrderItem}
             onAddToOrder={handleAddToOrder}
             calculateTotalPrice={calculateTotalPrice}
+            tableTotals={tableTotals}
           />
         </div>
         <div className="rounded-lg h-full">
           <Tables
             selectedTable={selectedTable}
-            onSelectTable={setSelectedTable}
+            tableTotals={tableTotals}
+            onSelectTable={handleSelectTable}
           />
         </div>
       </div>
@@ -104,20 +113,3 @@ function Home() {
 
 export default Home;
 
-
-// export async function getServerSideProps(context) {
-//     const isAuthenticated = await checkAuth(context);
-  
-//     if (!isAuthenticated) {
-//       return {
-//         redirect: {
-//           destination: '/auth/login',
-//           permanent: false,
-//         },
-//       };
-//     }
-  
-//     return {
-//       props: {}, // will be passed to the page component as props
-//     };
-//   }
