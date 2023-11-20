@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import MenuList from "./menuList/menuList";
 import MenuItemDetail from "./listItems/listItems";
 import OrderSummary from "./orderSummary/orderSummary";
-import { fetchInventoryItems, fetchAllTableIds, orderCreate } from "@/utils/api";
+import { fetchInventoryItems, fetchAllTables, orderCreate } from "@/utils/api";
 
 const Menu = (selectedTable) => {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
@@ -25,8 +25,13 @@ const Menu = (selectedTable) => {
   useEffect(() => {
     // Calculate totals for each table
     const totals = {};
-    Object.entries(orderItems).forEach(([tableId, items]) => {
-      totals[tableId] = items.reduce((total, item) => total + item.price * item.quantity, 0);
+    Object.entries(orderItems).forEach(([tableId, itemDetails]) => {
+      // Ensure itemDetails is an object and has a quantity and price
+      if (itemDetails && typeof itemDetails === 'object' && itemDetails.quantity && itemDetails.price) {
+        totals[tableId] = itemDetails.quantity * itemDetails.price;
+      } else {
+        totals[tableId] = 0; // Default to 0 if no valid itemDetails found
+      }
     });
     setTableTotals(totals);
   }, [orderItems]);
@@ -36,10 +41,10 @@ const Menu = (selectedTable) => {
   useEffect(() => {
     const initializeTables = async () => {
       try {
-        const tableData = await fetchAllTableIds();
+        const tableData = await fetchAllTables();
         setTables(tableData);
       } catch (error) {
-        console.error('Error fetching table IDs:', error);
+        console.error('Error fetching tables:', error);
       }
     };
 
@@ -112,15 +117,15 @@ const Menu = (selectedTable) => {
   const calculateTotalPrice = () => {
     return Object.values(orderItems).reduce((total, item) => total + item.price * item.quantity, 0);
   };
-  const createOrder = async (tableId) => {
-    const tableID = getTableIdFromNumber(tableId);
-    if (!tableID) {
+  const createOrder = async (tableNumber) => {
+    // const tableID = getTableIdFromNumber(tableId);
+    if (!tableNumber) {
       console.error('Table ID not found for the selected table number');
       return;
     }
     setTotalPrice(calculateTotalPrice());
     try {
-      const response = await orderCreate( tableID, totalPrice);
+      const response = await orderCreate(tableNumber, totalPrice);
       console.log('Order created:', response);
       // Reset order items and other states as necessary
       setOrderItems({});
@@ -131,26 +136,7 @@ const Menu = (selectedTable) => {
     }
   };
 const TP = calculateTotalPrice();
-  useEffect(() => {
-    const fetchTables = async () => {
-      // Fetch tables from the database
-      // For now, we'll just simulate it with dummy data
-      const fetchedTables = new Array(16).fill(null).map((_, index) => ({
-        table_id: index + 1,
-        table_number: index + 1,
-        status: "free",
-        current_order_id: null
-      }));
-      setTables(fetchedTables);
-    };
 
-    fetchTables();
-    // Load menu items
-    const loadMenuItems = async () => {
-      // ... existing loadMenuItems implementation ...
-    };
-    loadMenuItems();
-  }, []);
 
   
   const getTableIdFromNumber = (tableNumber) => {
