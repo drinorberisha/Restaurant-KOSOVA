@@ -10,7 +10,7 @@ function Tables({ selectedTable, onSelectTable , tableTotals}) {
     const fetchTables = async () => {
       try {
         const fetchedTables = await fetchAllTables();
-        const tableNumber = fetchedTables.table_number;
+        console.log("fetched tables in the tables.js",fetchedTables);
         setTables(fetchedTables);
       } catch (error) {
         console.error('Error fetching tables:', error);
@@ -58,23 +58,27 @@ function Tables({ selectedTable, onSelectTable , tableTotals}) {
       </div>
 
       <div className="grid grid-cols-4 gap-5 p-5 overflow-y-auto bg-black bg-opacity-60">
-      {tables.map((table) => (
-    <div
-      key={table.table_id}
-      className={`text-center ${table.table_number === selectedTable ? "text-black bg-gray-300" : "text-white"} rounded-lg p-1.5`}
-      onClick={() => onSelectTable(table.table_number)}
-    >
-      <Image
-        src={tableImage}
-        alt="Table"
-        width={75}
-        height={75}
-        className="w-18 h-18 rounded-full mx-auto"
-      />
-      <div>Table {table.table_number} - Total: {tableTotals[table.table_id] || 0}€</div>
-      <div>Status: {table.status}</div>
-    </div>
-  ))}
+      {tables.map((table) => {
+    console.log(`Table ID: ${table.table_id}, Table Number: ${table.table_number}, Total: ${tableTotals[table.table_id]}€`);
+
+    return (
+      <div
+        key={table.table_id}
+        className={`text-center ${table.table_number === selectedTable ? "text-black bg-gray-300" : "text-white"} rounded-lg p-1.5`}
+        onClick={() => onSelectTable(table.table_number)}
+      >
+        <Image
+          src={tableImage}
+          alt="Table"
+          width={75}
+          height={75}
+          className="w-18 h-18 rounded-full mx-auto"
+        />
+        <div>Table {table.table_number} - Total: {tableTotals[table.table_id] || 0}€</div>
+        <div>Status: {table.status}</div>
+      </div>
+    );
+  })}
       </div>
 
       <div className="p-3 bg-white bg-cover bg-center bg-no-repeat rounded-b-lg bg-[url('/bg2.jpg')]">

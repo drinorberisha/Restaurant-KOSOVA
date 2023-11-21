@@ -13,8 +13,8 @@ function Home() {
 
   const [selectedTable, setSelectedTable] = useState(1);
 
-  const [tableTotals, setTableTotals] = useState({});
-  const [tableOrders, setTableOrders] = useState({});
+  const [newTableTotals, setNewTableTotals] = useState({});
+    const [tableOrders, setTableOrders] = useState({});
   const calculateTotalPrice = (items) =>
     items.reduce((total, item) => total + item.price * item.quantity, 0);
 
@@ -27,6 +27,10 @@ function Home() {
         ...prevOrders,
         [selectedTable]: newOrderItems
       }));
+    };
+
+    const handleTableTotalsChange = (newTableTotals) => {
+      setTableTotals(newTableTotals);
     };
   return (
     <div className="min-h-screen min-w-full bg-cover bg-no-repeat bg-center bg-login-view overflow-hidden">
@@ -43,14 +47,15 @@ function Home() {
             setTableOrders={setTableOrders}
             onOrderItemsChange={handleOrderItemsChange}
 
+            setNewTableTotals={setNewTableTotals}
+
             calculateTotalPrice={calculateTotalPrice}
-            tableTotals={tableTotals}
           />
         </div>
         <div className="rounded-lg h-full">
           <Tables
             selectedTable={selectedTable}
-            tableTotals={tableTotals}
+            tableTotals={newTableTotals}
             onSelectTable={handleSelectTable}
           />
         </div>

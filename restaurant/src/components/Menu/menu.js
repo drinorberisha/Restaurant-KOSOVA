@@ -4,7 +4,7 @@ import MenuItemDetail from "./listItems/listItems";
 import OrderSummary from "./orderSummary/orderSummary";
 import { fetchInventoryItems, fetchAllTables, orderCreate } from "@/utils/api";
 
-const Menu = ({ selectedTable,  onOrderItemsChange,}) => {
+const Menu = ({ selectedTable,  onOrderItemsChange,setNewTableTotals,}) => {
 
 
 console.log(selectedTable);
@@ -220,8 +220,9 @@ console.log(selectedTable);
   console.log("FROM menu.js: selectedTable",selectedTable);
 
   useEffect(() => {
-    console.log("Updated tableTotals:", tableTotals);
-  }, [tableTotals]);
+    // Update newTableTotals in the parent component whenever tableTotals changes
+    setNewTableTotals(tableTotals);
+  }, [tableTotals, setNewTableTotals]);
 
 
   return (
