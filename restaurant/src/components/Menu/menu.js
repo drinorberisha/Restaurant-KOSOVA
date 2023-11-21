@@ -4,7 +4,11 @@ import MenuItemDetail from "./listItems/listItems";
 import OrderSummary from "./orderSummary/orderSummary";
 import { fetchInventoryItems, fetchAllTables, orderCreate } from "@/utils/api";
 
-const Menu = (selectedTable) => {
+const Menu = ({ selectedTable,  onOrderItemsChange,}) => {
+
+
+console.log(selectedTable);
+
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const [orderItems, setOrderItems] = useState({}); // Initialize orderItems state
@@ -21,20 +25,7 @@ const Menu = (selectedTable) => {
   );
 
   console.log(orderItems);
-
-  useEffect(() => {
-    // Calculate totals for each table
-    const totals = {};
-    Object.entries(orderItems).forEach(([tableId, itemDetails]) => {
-      // Ensure itemDetails is an object and has a quantity and price
-      if (itemDetails && typeof itemDetails === 'object' && itemDetails.quantity && itemDetails.price) {
-        totals[tableId] = itemDetails.quantity * itemDetails.price;
-      } else {
-        totals[tableId] = 0; // Default to 0 if no valid itemDetails found
-      }
-    });
-    setTableTotals(totals);
-  }, [orderItems]);
+ 
 
 
 
@@ -71,89 +62,178 @@ const Menu = (selectedTable) => {
 
   const onAddToOrder = (item) => {
     setOrderItems(prevItems => {
-      const currentQuantity = prevItems[item.item_id]?.quantity || 0;
-      return {
-        ...prevItems,
-        [item.item_id]: {
-          name: item.item_name,
-          item_id:item.item_id,
-          price: item.price,
-          quantity: currentQuantity + 1
-        }
+      const tableId = selectedTable;
+      const updatedItems = { ...prevItems };
+  
+      if (!updatedItems[tableId]) {
+        updatedItems[tableId] = {};
+      }
+  
+      const currentQuantity = updatedItems[tableId][item.item_id]?.quantity || 0;
+      updatedItems[tableId][item.item_id] = {
+        name: item.item_name,
+        item_id: item.item_id,
+        price: item.price,
+        quantity: currentQuantity + 1
       };
+
+      const newTotal = Object.values(updatedItems[tableId]).reduce(
+        (sum, currItem) => sum + (currItem.price * currItem.quantity),
+        0
+      );
+      setTableTotals(prevTotals => {
+        
+        console.log("Selected Table:", selectedTable);
+        console.log("Order Items for Selected Table:", orderItems[selectedTable]);
+        console.log("the calculation of total:",newTotal)
+        return { ...prevTotals, [tableId]: newTotal };
+      });
+
+
+
+
+      if (onOrderItemsChange) {
+        onOrderItemsChange(orderItems);
+      }
+      return updatedItems;
     });
   };
-
+  
   const onIncrement = (itemId) => {
     setOrderItems(prevItems => {
       const updatedItems = { ...prevItems };
-      if (updatedItems[itemId]) {
-        updatedItems[itemId].quantity += 1;
+      const tableId = selectedTable;
+  
+      if (updatedItems[tableId] && updatedItems[tableId][itemId]) {
+        updatedItems[tableId][itemId].quantity += 1;
+  
+        // Update total price here
+       setTableTotals(prevTotals => {
+        const newTotal = calculateTotalPrice(orderItems[tableId]);
+        console.log("Selected Table:", selectedTable);
+        console.log("Order Items for Selected Table:", orderItems[selectedTable]);
+        console.log("the calculation of total:",newTotal)
+        return { ...prevTotals, [tableId]: newTotal };
+      });
+      }
+      if (onOrderItemsChange) {
+        onOrderItemsChange(orderItems);
       }
       return updatedItems;
     });
   };
   
   const onDecrement = (itemId) => {
+    console.log("itemId from onDecrement fucntion", itemId);
     setOrderItems(prevItems => {
       const updatedItems = { ...prevItems };
-      if (updatedItems[itemId] && updatedItems[itemId].quantity > 1) {
-        updatedItems[itemId].quantity -= 1;
-      } else {
-        delete updatedItems[itemId];
+      const tableId = selectedTable;
+  
+      if (updatedItems[tableId] && updatedItems[tableId][itemId] && updatedItems[tableId][itemId].quantity > 1) {
+        updatedItems[tableId][itemId].quantity -= 1;
+  
+        // Update total price here
+        setTableTotals(prevTotals => ({
+          ...prevTotals,
+          [selectedTable]: calculateTotalPrice(orderItems[selectedTable])
+        }));
+      }
+      if (onOrderItemsChange) {
+        onOrderItemsChange(orderItems);
       }
       return updatedItems;
     });
   };
   
+
+  
   const onDelete = (itemId) => {
     setOrderItems(prevItems => {
       const updatedItems = { ...prevItems };
-      delete updatedItems[itemId];
+      const tableId = selectedTable;
+  
+      if (updatedItems[tableId] && updatedItems[tableId][itemId]) {
+        delete updatedItems[tableId][itemId];
+  
+        // Update total price here
+        const updatedTotal = calculateTotalPrice(updatedItems[tableId]);
+        setTableTotals(prevTotals => ({
+          ...prevTotals,
+          [tableId]: updatedTotal
+        }));
+      }
+      if (onOrderItemsChange) {
+        onOrderItemsChange(orderItems);
+      }
       return updatedItems;
     });
   };
   
-  const calculateTotalPrice = () => {
-    return Object.values(orderItems).reduce((total, item) => total + item.price * item.quantity, 0);
+  const calculateTotalPrice = (items) => {
+    if (!items) {
+      // If items is undefined or null, return 0
+      return 0;
+    }
+  
+    return Object.values(items).reduce((total, item) => {
+      if (item && item.price && item.quantity) {
+        return total + item.price * item.quantity;
+      } else {
+        return total;
+      }
+    }, 0);
   };
   const createOrder = async (tableNumber) => {
-    // const tableID = getTableIdFromNumber(tableId);
+    const currentTotalPrice = tableTotals[tableNumber] || 0; // Get the total price from tableTotals
+        console.log("table number:",tableNumber);
+
     if (!tableNumber) {
       console.error('Table ID not found for the selected table number');
       return;
     }
-    setTotalPrice(calculateTotalPrice());
     try {
-      const response = await orderCreate(tableNumber, totalPrice);
+      console.log("current total price before api call",currentTotalPrice);
+      const response = await orderCreate(tableNumber, currentTotalPrice);
       console.log('Order created:', response);
-      // Reset order items and other states as necessary
-      setOrderItems({});
+      setOrderItems(prevItems => {
+        const updatedItems = { ...prevItems };
+        delete updatedItems[tableNumber];
+        return updatedItems;
+      });
+      setTableTotals(prevTotals => ({
+        ...prevTotals,
+        [tableNumber]: 0 // Reset the total price for this table
+      }));
       // Display success message or handle UI updates
     } catch (error) {
       console.error('Error creating order:', error);
       // Display error message or handle UI updates
     }
   };
-const TP = calculateTotalPrice();
 
 
   
-  const getTableIdFromNumber = (tableNumber) => {
-    const table = tables.find(t => t.table_number === tableNumber);
-    return table ? table.table_id : null;
-  };
+  // const getTableIdFromNumber = (tableNumber) => {
+  //   const table = tables.find(t => t.table_number === tableNumber);
+  //   return table ? table.table_id : null;
+  // };
+  console.log("FROM menu.js: selectedTable",selectedTable);
+
+  useEffect(() => {
+    console.log("Updated tableTotals:", tableTotals);
+  }, [tableTotals]);
+
 
   return (
     <div className="bg-gray-100 p-2.5 rounded-md h-full flex flex-col">
       <MenuList onSubcategorySelect={setSelectedSubcategory}/>
       <MenuItemDetail  category={getCategoryFromSubcategory(selectedSubcategory)} subcategory={selectedSubcategory} menuItems={menuItems} onAddToOrder={onAddToOrder} />
       <OrderSummary
-        orderItems={Object.values(orderItems)}
-        onIncrement={(item) => onIncrement(item.item_id)}
-        onDecrement={(item) => onDecrement(item.item_id)}
-        onDelete={(item) => onDelete(item.item_id)}
-        totalPrice={calculateTotalPrice()}
+        orderItems={orderItems[selectedTable] || []} // Pass only the current table's orders        
+        onIncrement={(item) => onIncrement(item)}
+        onDecrement={(item) => onDecrement(item)}
+        onDelete={(item) => onDelete(item)}
+        totalPrice={tableTotals[selectedTable]} // Total price for the current table        
         onCreateOrder={() => createOrder(selectedTable)}
       />
 

@@ -37,6 +37,7 @@ function MenuList({ onSelectItem, onCategorySelect, onSubcategorySelect }) {
 
   // Subcategory mapping
   const subcategoryMapping = {
+    All:['Pizza', 'Pasta', 'Hamburger','Alkoolike', 'JoAlkoolike', 'Tea','Torte', 'Akullore', 'Puding'],
     Ushqim: ['Pizza', 'Pasta', 'Hamburger'],
     Pije: ['Alkoolike', 'JoAlkoolike', 'Tea'],
     Dessert: ['Torte', 'Akullore', 'Puding']
@@ -117,6 +118,7 @@ function MenuList({ onSelectItem, onCategorySelect, onSubcategorySelect }) {
   return (
     <div className="flex h-[37%]">
        <div className="flex flex-col space-y-2 p-2 border-l-2 border-b-2 border-black flex-grow-0">
+       <button className="bg-gray-200 hover:bg-gray-300 text-black font-semibold py-2 px-4 rounded-full" onClick={() => handleCategoryButtonClick('All')}>All</button>
         <button className="bg-gray-200 hover:bg-gray-300 text-black font-semibold py-2 px-4 rounded-full" onClick={() => handleCategoryButtonClick('Ushqim')}>Ushqim</button>
         <button className="bg-gray-200 hover:bg-gray-300 text-black font-semibold py-2 px-4 rounded-full" onClick={() => handleCategoryButtonClick('Pije')}>Pije</button>
         <button className="bg-gray-200 hover:bg-gray-300 text-black font-semibold py-2 px-4 rounded-full" onClick={() => handleCategoryButtonClick('Dessert')}>Dessert</button>

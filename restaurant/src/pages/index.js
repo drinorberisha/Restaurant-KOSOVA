@@ -10,76 +10,23 @@ function Home() {
   const [selectedItem, setSelectedItem] = useState(menuItems[0]);
   const initialOrders = new Array(16).fill([]).map(() => []);
   const [orderSummaries, setOrderSummaries] = useState(initialOrders);
-  const [selectedTable, setSelectedTable] = useState(0);
+
+  const [selectedTable, setSelectedTable] = useState(1);
 
   const [tableTotals, setTableTotals] = useState({});
-
-  const handleIncrement = (item) => {
-    const updatedSummaries = [...orderSummaries];
-    const updatedOrders = updatedSummaries[selectedTable].map((orderItem) =>
-      orderItem.name === item.name
-        ? { ...orderItem, quantity: orderItem.quantity + 1 }
-        : orderItem
-    );
-    updatedSummaries[selectedTable] = updatedOrders;
-    setOrderSummaries(updatedSummaries);
-  };
-
-  const handleDecrement = (item) => {
-    const updatedSummaries = [...orderSummaries];
-    const currentTableOrders = updatedSummaries[selectedTable];
-    const updatedQuantity = item.quantity - 1;
-    if (updatedQuantity === 0) {
-      updatedSummaries[selectedTable] = currentTableOrders.filter(
-        (orderItem) => orderItem.name !== item.name
-      );
-    } else {
-      updatedSummaries[selectedTable] = currentTableOrders.map((orderItem) =>
-        orderItem.name === item.name
-          ? { ...orderItem, quantity: updatedQuantity }
-          : orderItem
-      );
-    }
-    setOrderSummaries(updatedSummaries);
-  };
-
-  const handleDeleteOrderItem = (item) => {
-    const updatedSummaries = [...orderSummaries];
-    const updatedOrders = updatedSummaries[selectedTable].filter(
-      (orderItem) => orderItem.name !== item.name
-    );
-    updatedSummaries[selectedTable] = updatedOrders;
-    setOrderSummaries(updatedSummaries);
-  };
-
-  const handleAddToOrder = (type) => {
-    const updatedSummaries = [...orderSummaries];
-    const currentTableOrders = updatedSummaries[selectedTable] || [];
-    const existingItem = currentTableOrders.find(
-      (orderItem) => orderItem.name === type.name
-    );
-    if (existingItem) {
-      updatedSummaries[selectedTable] = currentTableOrders.map((item) =>
-        item.name === type.name
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-    } else {
-      updatedSummaries[selectedTable] = [
-        ...currentTableOrders,
-        { ...type, quantity: 1 },
-      ];
-    }
-    setOrderSummaries(updatedSummaries);
-  };
-
+  const [tableOrders, setTableOrders] = useState({});
   const calculateTotalPrice = (items) =>
     items.reduce((total, item) => total + item.price * item.quantity, 0);
 
-
     const handleSelectTable = (tableNumber) => {
+  
       setSelectedTable(tableNumber);
-      // Additional logic if needed
+    };
+    const handleOrderItemsChange = (newOrderItems) => {
+      setTableOrders(prevOrders => ({
+        ...prevOrders,
+        [selectedTable]: newOrderItems
+      }));
     };
   return (
     <div className="min-h-screen min-w-full bg-cover bg-no-repeat bg-center bg-login-view overflow-hidden">
@@ -90,11 +37,12 @@ function Home() {
             selectedItem={selectedItem}
             onSelectItem={setSelectedItem}
             orderSummaries={orderSummaries}
-            selectedTableNumber={selectedTable}
-            onIncrement={handleIncrement}
-            onDecrement={handleDecrement}
-            onDelete={handleDeleteOrderItem}
-            onAddToOrder={handleAddToOrder}
+            selectedTable={selectedTable}
+
+            tableOrders={tableOrders}
+            setTableOrders={setTableOrders}
+            onOrderItemsChange={handleOrderItemsChange}
+
             calculateTotalPrice={calculateTotalPrice}
             tableTotals={tableTotals}
           />
