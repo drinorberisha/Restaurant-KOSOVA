@@ -12,7 +12,6 @@ const InventoryTable = () => {
 
 
 
-
   useEffect(() => {
     const loadInventoryItems = async () => {
       try {
@@ -185,7 +184,8 @@ const filteredItems = inventoryItems.filter(item => {
 
   return (
  
-<>
+<>  
+
      <div className="mb-4">
         <input
           type="text"
@@ -207,7 +207,7 @@ const filteredItems = inventoryItems.filter(item => {
           ))}
     </select>
 
-        <button></button>
+   
       </div>
 <table className="min-w-full table-auto">
 <thead>

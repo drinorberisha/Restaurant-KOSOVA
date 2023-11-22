@@ -65,4 +65,10 @@ export const fetchAllTableIds = async () => {
 export const fetchAllTables = async () => {
   return await apiCall('tables', 'getAllTables', 'GET');
 };
+export const fetchAllUsers= async () => {
+  return await apiCall('users', '', 'GET' );
+};
+export const updateUser= async (userId, updates) => {
+  return await apiCall('update', `${userId}`, 'PUT' ,updates );
+};
 
