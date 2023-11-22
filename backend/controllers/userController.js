@@ -50,3 +50,25 @@ exports.getUsers = async (req, res) => {
       res.status(500).send('Server error');
     }
   };
+  exports.registerUser = async (req, res) => {
+    try {
+      const { first_name, last_name, username, password, role, status } = req.body;
+  
+      // Perform necessary validations (e.g., check if username already exists)
+  
+  
+      await db('users').insert({
+        first_name,
+        last_name,
+        username,
+        password,
+        role,
+        status
+      });
+  
+      res.status(201).json({ message: 'User registered successfully' });
+    } catch (error) {
+      console.error('Error registering user:', error);
+      res.status(500).send('Server error');
+    }
+  };

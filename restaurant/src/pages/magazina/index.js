@@ -53,6 +53,7 @@ const Magazina = () => {
     
    ):(
       <UserManagementTable/>
+      
     )}
             </div>
       </div>

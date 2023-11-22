@@ -71,4 +71,8 @@ export const fetchAllUsers= async () => {
 export const updateUser= async (userId, updates) => {
   return await apiCall('update', `${userId}`, 'PUT' ,updates );
 };
+export const addNewUser= async (userData) => {
+  return await apiCall('register', '', 'POST' ,userData );
+};
+
 

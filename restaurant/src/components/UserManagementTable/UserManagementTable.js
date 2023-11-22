@@ -1,4 +1,4 @@
-import { fetchAllUsers, updateUser } from '@/utils/api';
+import { fetchAllUsers, updateUser, addNewUser} from '@/utils/api';
 import React , {useState, useEffect} from 'react';
 
 
@@ -6,6 +6,19 @@ const UserManagementTable = () => {
   const [users, setUsers] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
   const [editFormData, setEditFormData] = useState({});
+
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newUserData, setNewUserData] = useState({
+    first_name: '',
+    last_name: '',
+    username: '',
+    password: '',
+    role: '',
+    status: 'active' // Default status
+  });
+
+  const [passwordError, setPasswordError] = useState('');
+
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -46,9 +59,66 @@ const UserManagementTable = () => {
       console.error('Error updating user:', error);
     }
   };
+
+  const handleNewUserChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'password') {
+      if (value.length <= 4) {
+        setNewUserData(prevData => ({ ...prevData, [name]: value }));
+        setPasswordError(''); // Clear error if input is valid
+      } else {
+        setPasswordError('Password must be 4 digits only');
+      }
+    } else {
+      setNewUserData(prevData => ({ ...prevData, [name]: value }));
+    }
+  };
+
+
+
+
+  // Function to submit new user d
+
+  const handleAddNewUser = async () => {
+    try {
+      if (newUserData.password.length !== 4) {
+        setPasswordError('Password must be exactly 4 digits');
+        return;
+      }
+      setPasswordError('');
+      await addNewUser(newUserData);
+      // Reset the form and fetch updated user list
+      setShowAddForm(false);
+      setNewUserData({ ...initialUserData });
+      loadUsers(); 
+    } catch (error) {
+      console.error('Error adding new user:', error);
+    }
+  };
+
   return (
     <div>
-      <h2>User Management</h2>
+      
+      <button onClick={() => setShowAddForm(true)}>Add New User</button>
+    {showAddForm && (
+      <div>
+        {/* Form for adding a new user */}
+        <input type="text" name="first_name" placeholder="First Name" onChange={handleNewUserChange}required />
+        <input type="text" name="last_name" placeholder="Last Name" onChange={handleNewUserChange}required />
+        <input type="text" name="username" placeholder="Username" onChange={handleNewUserChange} required/>
+        <input type="number" name="password"  placeholder="Password (4 digits)" onChange={handleNewUserChange} required/>
+        
+        <select name="role" required onChange={handleNewUserChange}>
+          <option value="">Select Role</option>
+          <option value="admin">Admin</option>
+          <option value="manager">Manager</option>
+          <option value="waiter">Waiter</option>
+
+        </select>
+        {passwordError && <div className="error-message">{passwordError}</div>}
+        <button onClick={handleAddNewUser}>Register</button>
+      </div>
+    )}
       <table>
         <thead>
           <tr>

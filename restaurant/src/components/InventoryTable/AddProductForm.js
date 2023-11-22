@@ -6,7 +6,13 @@ import { AddProduct } from '@/utils/api';
 import { data } from 'autoprefixer';
 
 const AddProductForm = ({ setShowAddForm }) => {
-
+  
+  const subcategoryMapping = {
+    Ushqim: ['Pizza', 'Pasta', 'Hamburger'],
+    Pije: ['Alkoolike', 'JoAlkoolike', 'Tea'],
+    Dessert: ['Torte', 'Akullore', 'Puding']
+    // Add more categories and subcategories as needed
+  };
   const [formData, setFormData] = useState({
     item_name: '',
     category: '',
@@ -43,6 +49,8 @@ const AddProductForm = ({ setShowAddForm }) => {
     setShowAddForm(false); // Close form without adding
   };
 
+  
+
   return (
     <>
     <ToastContainer/>
@@ -65,13 +73,26 @@ const AddProductForm = ({ setShowAddForm }) => {
             placeholder="Category"
             required
           />
-          <input
+          <select name="category"onChange={handleInputChange}>
+            
+            <option>Zgjedhe 1 kategori</option>
+            <option value="Ushqim">Ushqim</option>
+            <option value="Pije">Pije</option>
+            <option value="Dessert">Dessert</option>
+        </select>
+        <select onChange={handleSubcategoryChange}>
+         <option value="All">Zgjedhe 1 subkategori</option>
+         {availableSubcategories.map(subcategory => (
+          <option key={subcategory} value={subcategory}>{subcategory}</option>
+          ))}
+    </select>
+          {/* <input
             type="text"
             name="subcategory"
             value={formData.subcategory}
             onChange={handleInputChange}
             placeholder="Subcategory"
-          />
+          /> */}
           <input
             type="number"
             name="current_count"
