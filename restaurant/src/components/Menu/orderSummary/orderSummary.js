@@ -31,7 +31,7 @@ function OrderSummary({
       </div>
       <div className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto max-h-56 bg-cover bg-no-repeat bg-fixed bg-[url('/background.jpg')] bg-center bg-blend-darken">
         {currentTableItems.map((item, index) => {
-
+            return(
             <div key={index} className="text-white flex justify-between items-center py-1 border-b border-gray-300">
               {item.name} - {item.quantity} items - {item.price}€
               <div className="flex items-center justify-center">
@@ -47,6 +47,7 @@ function OrderSummary({
                 </button>
               </div>
             </div>
+            )
           
         })}
       </div>
