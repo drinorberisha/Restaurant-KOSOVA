@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 function OrderSummary({
   orderItems,
+  unpaidItemsDetails,
   onIncrement,
   onDecrement,
   onDelete,
@@ -18,6 +19,46 @@ function OrderSummary({
   const totalOrderHandle = () => {
     setTotalOrder('totalorder');
   }
+  const renderItems = () => {
+    if (totalOrder === 'totalorder') {
+      // Render details for unpaid items
+      return unpaidItemsDetails.map((item, index) => (
+        <div key={index} className="text-white flex justify-between items-center py-1 border-b border-gray-300">
+        {item.item_name} - {item.quantity} items - {item.price}€
+        <div className="flex items-center justify-center">
+          <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onDecrement(item.item_id)}>
+            -
+          </button>
+          <span className="align-middle mx-1">/</span>
+          <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onIncrement(item.item_id)}>
+            +
+          </button>
+          <button className="ml-2.5 bg-transparent border-none cursor-pointer text-lg text-red-500" onClick={() => onDelete(item.item_id)}>
+            🗑️
+          </button>
+        </div>
+      </div>
+      ));
+    } else {
+      return currentTableItems.map((item, index) => (
+        <div key={index} className="text-white flex justify-between items-center py-1 border-b border-gray-300">
+          {item.name} - {item.quantity} items - {item.price}€
+          <div className="flex items-center justify-center">
+            <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onDecrement(item.item_id)}>
+              -
+            </button>
+            <span className="align-middle mx-1">/</span>
+            <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onIncrement(item.item_id)}>
+              +
+            </button>
+            <button className="ml-2.5 bg-transparent border-none cursor-pointer text-lg text-red-500" onClick={() => onDelete(item.item_id)}>
+              🗑️
+            </button>
+          </div>
+        </div>
+      ))
+    }
+  };
 
   return (
     <div className="h-[40%] ">
@@ -31,23 +72,7 @@ function OrderSummary({
         </div>
       </div>
       <div className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto bg-cover bg-no-repeat bg-fixed bg-[url('/loginView.jpg')] bg-center bg-blend-darken" style={{ height: "27vh" }}>
-        {currentTableItems.map((item, index) => (
-          <div key={index} className="text-white flex justify-between items-center py-1 border-b border-gray-300">
-            {item.name} - {item.quantity} items - {item.price}€
-            <div className="flex items-center justify-center">
-              <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onDecrement(item.item_id)}>
-                -
-              </button>
-              <span className="align-middle mx-1">/</span>
-              <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onIncrement(item.item_id)}>
-                +
-              </button>
-              <button className="ml-2.5 bg-transparent border-none cursor-pointer text-lg text-red-500" onClick={() => onDelete(item.item_id)}>
-                🗑️
-              </button>
-            </div>
-          </div>
-        ))}
+     {renderItems()}
       </div>
       <div className="flex flex-row mt-2.5 font-bold">
         <p className="mr-5">Total price: {totalPrice}€</p>

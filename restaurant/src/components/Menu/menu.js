@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import MenuList from "./menuList/menuList";
 import MenuItemDetail from "./listItems/listItems";
 import OrderSummary from "./orderSummary/orderSummary";
-import { fetchInventoryItems, fetchAllTables, orderCreate } from "@/utils/api";
+import { fetchInventoryItems, fetchAllTables, orderCreate, fetchUnpaidItems} from "@/utils/api";
 
 const Menu = ({ selectedTable,  onOrderItemsChange,setNewTableTotals,}) => {
 
@@ -11,7 +11,7 @@ console.log(selectedTable);
 
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
-  const [orderItems, setOrderItems] = useState({}); // Initialize orderItems state
+  const [orderItems, setOrderItems] = useState({});
   const [totalPrice, setTotalPrice] = useState(0.0);
 
   const [tableTotals, setTableTotals] = useState({});
@@ -23,6 +23,32 @@ console.log(selectedTable);
       current_order_id: null
     }))
   );
+
+  const [unpaidItemIds, setUnpaidItemIds] = useState([]);
+  const [unpaidItemsDetails, setUnpaidItemsDetails] = useState([]);
+
+  useEffect(() => {
+    const loadUnpaidItems = async () => {
+      if (selectedTable) {
+        try {
+          const itemsWithQuantities = await fetchUnpaidItems(selectedTable);
+          console.log("Items with quantities:", itemsWithQuantities);
+  
+          const itemsDetails = itemsWithQuantities.map(({ itemId, quantity }) => {
+            const itemDetails = menuItems.find(item => item.item_id === itemId);
+            return { ...itemDetails, quantity };
+          });
+  
+          console.log("Items details including quantities:", itemsDetails);
+          setUnpaidItemsDetails(itemsDetails);
+        } catch (error) {
+          console.error('Error fetching unpaid items for table:', selectedTable, error);
+        }
+      }
+    };
+  
+    loadUnpaidItems();
+  }, [selectedTable, menuItems]);
 
   console.log(orderItems);
  
@@ -183,18 +209,31 @@ console.log(selectedTable);
       }
     }, 0);
   };
+const [checkOrderItems, setCheckOrderItems] = useState([]);
+
   const createOrder = async (tableNumber) => {
     const currentTotalPrice = tableTotals[tableNumber] || 0; // Get the total price from tableTotals
-        console.log("table number:",tableNumber);
 
     if (!tableNumber) {
       console.error('Table ID not found for the selected table number');
       return;
     }
+
+    // Extract item_ids from orderItems for the selected table
+    const itemsData = orderItems[tableNumber] ? 
+    Object.entries(orderItems[tableNumber]).map(([itemId, itemDetails]) => ({
+        itemId: parseInt(itemId),
+        quantity: itemDetails.quantity
+    })) : [];
+
     try {
-      console.log("current total price before api call",currentTotalPrice);
-      const response = await orderCreate(tableNumber, currentTotalPrice);
+      console.log("current total price before api call", currentTotalPrice);
+      // Modify the API call to include itemIds
+  
+      const response = await orderCreate(tableNumber, currentTotalPrice, itemsData);
       console.log('Order created:', response);
+      console.log("unpaidItemsDetails:",unpaidItemsDetails);
+      // Reset state after order creation
       setOrderItems(prevItems => {
         const updatedItems = { ...prevItems };
         delete updatedItems[tableNumber];
@@ -209,7 +248,7 @@ console.log(selectedTable);
       console.error('Error creating order:', error);
       // Display error message or handle UI updates
     }
-  };
+};
 
 
   
@@ -232,7 +271,8 @@ console.log(selectedTable);
       <MenuItemDetail  category={getCategoryFromSubcategory(selectedSubcategory)} subcategory={selectedSubcategory} menuItems={menuItems} onAddToOrder={onAddToOrder} />
       <div className="border-t border-gray-900"></div>{" "}
       <OrderSummary
-        orderItems={orderItems[selectedTable] || []} // Pass only the current table's orders        
+        orderItems={orderItems[selectedTable] || []} // Pass only the current table's orders 
+        unpaidItemsDetails={unpaidItemsDetails}
         onIncrement={(item) => onIncrement(item)}
         onDecrement={(item) => onDecrement(item)}
         onDelete={(item) => onDelete(item)}
