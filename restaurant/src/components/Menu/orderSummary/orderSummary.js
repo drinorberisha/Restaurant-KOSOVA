@@ -1,7 +1,4 @@
-// OrderSummary.js
-
 import React,{useState} from "react";
-import background from "../../../../public/background.jpg";
 
 function OrderSummary({
   orderItems,
@@ -29,7 +26,7 @@ function OrderSummary({
       <button onClick={totalOrderHandle}>Total Order</button>
 
       </div>
-      <div className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto max-h-56 bg-cover bg-no-repeat bg-fixed bg-[url('/background.jpg')] bg-center bg-blend-darken">
+      <div className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto max-h-56 bg-cover bg-no-repeat bg-fixed bg-[url('/loginView.jpg')] bg-center bg-blend-darken" style={{ height: "25vh" }}>
         {currentTableItems.map((item, index) => {
             return(
             <div key={index} className="text-white flex justify-between items-center py-1 border-b border-gray-300">
