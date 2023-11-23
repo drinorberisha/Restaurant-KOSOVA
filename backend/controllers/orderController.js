@@ -34,6 +34,21 @@ exports.createOrder = async (req, res) => {
     }
 };
 
+exports.markOrdersAsPaid = async (req, res) => {
+    try {
+      const { tableId } = req.params;
+      // Update the Orders table to set paid status to 1 for the specified table's unpaid orders
+      await db('Orders')
+        .where({ table_id: tableId, paid: 0 })
+        .update({ paid: 1 });
+  
+      res.json({ message: 'Orders marked as paid successfully' });
+    } catch (error) {
+      console.error('Error marking orders as paid:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+
 
 exports.getUnpaidItems = async (req, res) => {
     try {

@@ -78,5 +78,8 @@ export const addNewUser= async (userData) => {
 export const fetchUnpaidItems = async (tableId) => {
   return await apiCall('unpaidItems', `${tableId}`, "GET",);
 }
+export const markOrdersAsPaid = async (tableId) => {
+  return await apiCall('orders', `markPaid/${tableId}`, 'POST',{});
+};
 
 

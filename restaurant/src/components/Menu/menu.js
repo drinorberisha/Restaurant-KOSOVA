@@ -27,6 +27,23 @@ console.log(selectedTable);
   const [unpaidItemIds, setUnpaidItemIds] = useState([]);
   const [unpaidItemsDetails, setUnpaidItemsDetails] = useState([]);
 
+
+
+  useEffect(() => {
+    const loadMenuItems = async () => {
+      try {
+        const items = await fetchInventoryItems();
+        setMenuItems(items);
+      } catch (error) {
+        console.error('Error fetching menu items:', error);
+      }
+    };
+  
+    loadMenuItems();
+  }, []);
+
+
+
   useEffect(() => {
     const loadUnpaidItems = async () => {
       if (selectedTable) {
@@ -67,16 +84,16 @@ console.log(selectedTable);
 
     initializeTables();
 
-    const loadMenuItems = async () => {
-      try {
-        const items = await fetchInventoryItems();
-        setMenuItems(items);
-      } catch (error) {
-        console.error('Error fetching menu items:', error);
-      }
-    };
+    // const loadMenuItems = async () => {
+    //   try {
+    //     const items = await fetchInventoryItems();
+    //     setMenuItems(items);
+    //   } catch (error) {
+    //     console.error('Error fetching menu items:', error);
+    //   }
+    // };
 
-    loadMenuItems();
+    // loadMenuItems();
   }, []);
 
 
@@ -278,8 +295,8 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
         onDelete={(item) => onDelete(item)}
         totalPrice={tableTotals[selectedTable]} // Total price for the current table        
         onCreateOrder={() => createOrder(selectedTable)}
+        selectedTable={selectedTable}
       />
-
     </div>
   );
 };
