@@ -20,7 +20,7 @@ function OrderSummary({
   }
 
   return (
-    <div className="h-[40%] border-b-2 border-l-2 border-black">
+    <div className="h-[40%] ">
       <div className="flex flex-row justify-between"> {/* Updated this line */}
         <p className="mr-5">Summary:</p>
         <div>
@@ -30,7 +30,7 @@ function OrderSummary({
           <button onClick={totalOrderHandle}>Total Order</button>
         </div>
       </div>
-      <div className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto bg-cover bg-no-repeat bg-fixed bg-[url('/loginView.jpg')] bg-center bg-blend-darken" style={{ height: "25vh" }}>
+      <div className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto bg-cover bg-no-repeat bg-fixed bg-[url('/loginView.jpg')] bg-center bg-blend-darken" style={{ height: "27vh" }}>
         {currentTableItems.map((item, index) => (
           <div key={index} className="text-white flex justify-between items-center py-1 border-b border-gray-300">
             {item.name} - {item.quantity} items - {item.price}€

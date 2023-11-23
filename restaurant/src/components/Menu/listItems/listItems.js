@@ -12,7 +12,7 @@ function MenuItemDetail({ category, subcategory, menuItems, onAddToOrder }) {
   };
   const filteredItems = menuItems.filter(item => item.subcategory === subcategory);
   return (
-    <div className="h-[23%] border-b-2 border-l-2 border-black ">
+    <div className="h-[23%] ">
     {subcategory ? (
       <div>
         <div>{category}:{subcategory} </div>
