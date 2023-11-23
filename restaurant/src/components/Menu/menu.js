@@ -228,7 +228,9 @@ console.log(selectedTable);
   return (
     <div className="bg-gray-100 p-2.5 rounded-md h-full flex flex-col">
       <MenuList onSubcategorySelect={setSelectedSubcategory}/>
+      <div className="border-t border-gray-900"></div>{" "}
       <MenuItemDetail  category={getCategoryFromSubcategory(selectedSubcategory)} subcategory={selectedSubcategory} menuItems={menuItems} onAddToOrder={onAddToOrder} />
+      <div className="border-t border-gray-900"></div>{" "}
       <OrderSummary
         orderItems={orderItems[selectedTable] || []} // Pass only the current table's orders        
         onIncrement={(item) => onIncrement(item)}
