@@ -109,12 +109,12 @@ function OrderSummary({
         <p className="mr-5">Summary:</p>
         <div>
           <button 
-              className={`border-black border-2 mr-5 ${ totalOrder === 'currentorder' ? 'bg-gray-400' : ''}`}
+              className={`border-black border-2 mr-5 ${ totalOrder === 'currentorder' ? 'bg-gray-300' : ''}`}
               onClick={currentOrderHandle}>
             Current Order
           </button>
           <button
-              className={`border-black border-2 ${ totalOrder === 'totalorder' ? 'bg-gray-400' : ''}`}          
+              className={`border-black border-2 ${ totalOrder === 'totalorder' ? 'bg-gray-300' : ''}`}          
               onClick={totalOrderHandle}>
             Total Order
           </button>

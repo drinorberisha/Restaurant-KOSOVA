@@ -1,36 +1,33 @@
 import React, { useState, useEffect } from "react";
 
-function MenuItemDetail({ category, subcategory, menuItems, onAddToOrder }) {
+function MenuItemDetail({ category, subcategory, menuItems, onAddToOrder , searchInput}) {
   const [selectedType, setSelectedType] = useState(null);
 
   // useEffect(() => {
   //   setSelectedType(null);
   // }, [item]);
+  const filteredItems = menuItems.filter(item => item.subcategory === subcategory)
+
+
 
   const handleSelectAndAddToOrder = (item) => {
     onAddToOrder(item);
   };
-  const filteredItems = menuItems.filter(item => item.subcategory === subcategory);
   return (
-    <div className="h-[23%] ">
-    {subcategory ? (
-      <div>
-        <div>{category}:{subcategory} </div>
-        <div className="grid grid-cols-5 gap-1.5 overflow-y-auto align-start mb-1">
+    <div className="h-[23%] flex flex-col">
+        <div className="mb-1">{subcategory ? `${category}: ${subcategory}` : 'All Items'}</div> 
+        <div className="grid grid-cols-5 gap-1.5 overflow-y-auto  align-start mb-1" style={{flex:1}}>
           {filteredItems.map((item) => (
             <div
               key={item.item_id}
               onClick={() => handleSelectAndAddToOrder(item)}
               className="p-1 cursor-pointer border border-gray-300 transition-all duration-300 rounded h-11">
-              {item.item_name} - {item.price}€
+              {item.item_name} 
             </div>
           ))}
         </div>
-      </div>
-    ) : (
-      <div className="text-center">Select a subcategory...</div>
-    )}
-  </div>
+    </div>
+   
 );
 }
 

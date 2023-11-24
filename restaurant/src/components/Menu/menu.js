@@ -12,7 +12,6 @@ console.log(selectedTable);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const [orderItems, setOrderItems] = useState({});
-  const [totalPrice, setTotalPrice] = useState(0.0);
 
   const [tableTotals, setTableTotals] = useState({});
   const [tables, setTables] = useState(
@@ -24,7 +23,6 @@ console.log(selectedTable);
     }))
   );
 
-  const [unpaidItemIds, setUnpaidItemIds] = useState([]);
   const [unpaidItemsDetails, setUnpaidItemsDetails] = useState([]);
 
   const refreshUnpaidItems = async () => {
@@ -307,14 +305,32 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
       [tableId]: 0 
     }));
   };
-  
+  //START  SEARCH INPUT
+  const [searchInput, setSearchInput] = useState('');
+  const [autoSelectedSubcategory, setAutoSelectedSubcategory] = useState(null);
+  const handleMenuSearchChange = (input) => {
+    setSearchInput(input);
 
+    // Determine the subcategory based on the search input
+    const filteredItems = menuItems.filter(item => 
+      item.item_name.toLowerCase().includes(input.toLowerCase())
+    );
+    const uniqueSubcategories = new Set(filteredItems.map(item => item.subcategory));
+
+    if (uniqueSubcategories.size === 1) {
+      setAutoSelectedSubcategory([...uniqueSubcategories][0]);
+    } else {
+      setAutoSelectedSubcategory(null);
+    }
+  };
+
+// END SEARCH INPUT
 
   return (
     <div className="bg-gray-100 p-2.5 rounded-md h-full flex flex-col">
-      <MenuList onSubcategorySelect={setSelectedSubcategory}/>
+      <MenuList onSubcategorySelect={setSelectedSubcategory} category={getCategoryFromSubcategory(selectedSubcategory)} onSearchInputChange={handleMenuSearchChange} searchInput={searchInput}   setSearchInput={setSearchInput}/>
       <div className="border-t border-gray-900"></div>{" "}
-      <MenuItemDetail  category={getCategoryFromSubcategory(selectedSubcategory)} subcategory={selectedSubcategory} menuItems={menuItems} onAddToOrder={onAddToOrder} />
+      <MenuItemDetail searchInput={searchInput} category={getCategoryFromSubcategory(selectedSubcategory)}  subcategory={selectedSubcategory || autoSelectedSubcategory }  menuItems={menuItems} onAddToOrder={onAddToOrder} />
       <div className="border-t border-gray-900"></div>{" "}
       <OrderSummary
         orderItems={orderItems[selectedTable] || []} // Pass only the current table's orders 
