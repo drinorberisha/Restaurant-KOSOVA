@@ -10,7 +10,6 @@ const router = express.Router();
 router.post('/menuitems/add', 
   [body('item_name').notEmpty().withMessage('Item name is required'), 
    body('price').isFloat({ gt: 0 }).withMessage('Price must be a positive number')],
-   checkUserRole(['admin', 'manager']),
   menuItemController.addMenuItem);
 
 router.delete('/menuitems/:itemId', menuItemController.deleteMenuItem);

@@ -13,7 +13,7 @@ const UserManagementTable = () => {
     username: "",
     password: "",
     role: "",
-    status: "active", // Default status
+    status: "active", 
   });
 
   const [passwordError, setPasswordError] = useState("");
@@ -92,7 +92,7 @@ const UserManagementTable = () => {
   };
 
   return (
-    <div>
+    <div className="table-container" style={{ maxHeight: '75vh', overflowY: 'auto' }}>
       <button onClick={() => setShowAddForm(true)}>Add New User</button>
       {showAddForm && (
         <div>

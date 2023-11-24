@@ -5,7 +5,6 @@ import {
   updateInventoryItem,
   updateMenuItem,
 } from "@/utils/api";
-import chai from "chai";
 
 const InventoryTable = () => {
   const [userRole, setUserRole] = useState(null);
@@ -14,6 +13,15 @@ const InventoryTable = () => {
   const [inventoryItems, setInventoryItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
+
+  const refreshProductList = async () => {
+    console.log("Refreshing product list...");
+    const updatedItems = await fetchInventoryItems();
+    setInventoryItems(updatedItems);
+    
+  };
+
+
 
   useEffect(() => {
     const loadInventoryItems = async () => {
@@ -292,7 +300,8 @@ const InventoryTable = () => {
           </select>
         </div>
       </div>
-      <table className="min-w-[85vw] min-h-[55vh] table-auto">
+      <div className="table-container" style={{ maxHeight: '75vh', overflowY: 'auto' }}>
+      <table className="min-w-full table-auto">
         <thead>
           <tr>
             <th className="px-4 py-2 border">Item Name</th>
@@ -343,6 +352,7 @@ const InventoryTable = () => {
           ))}
         </tbody>
       </table>
+      </div>
 
       {userRole === "admin" && (
         <button
@@ -353,7 +363,7 @@ const InventoryTable = () => {
         </button>
       )}
 
-      {showAddForm && <AddProductForm setShowAddForm={setShowAddForm} />}
+      {showAddForm && <AddProductForm refreshProductList={refreshProductList} setShowAddForm={setShowAddForm} />}
     </>
   );
 };

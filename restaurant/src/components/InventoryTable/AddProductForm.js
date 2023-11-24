@@ -5,7 +5,7 @@ import {ToastContainer, toast, toastContainer} from  'react-toastify';
 import { AddProduct } from '@/utils/api';
 import { data } from 'autoprefixer';
 
-const AddProductForm = ({ setShowAddForm }) => {
+const AddProductForm = ({ setShowAddForm ,refreshProductList}) => {
   
   const subcategoryMapping = {
     Ushqim: ['Pizza', 'Pasta', 'Hamburger'],
@@ -36,6 +36,9 @@ const AddProductForm = ({ setShowAddForm }) => {
       console.log(dataWithRole);
       await AddProduct(dataWithRole);
       setShowAddForm(false);
+     
+       refreshProductList(); 
+       console.log("Submitting new product...");
       // toast.message("Success, you added a new product!")
 
     } catch (error) {
@@ -46,7 +49,7 @@ const AddProductForm = ({ setShowAddForm }) => {
   };
 
   const handleCancel = () => {
-    setShowAddForm(false); // Close form without adding
+    setShowAddForm(false);
   };
 
   
@@ -73,26 +76,26 @@ const AddProductForm = ({ setShowAddForm }) => {
             placeholder="Category"
             required
           />
-          <select name="category"onChange={handleInputChange}>
+          {/* <select name="category"onChange={handleInputChange}>
             
             <option>Zgjedhe 1 kategori</option>
             <option value="Ushqim">Ushqim</option>
             <option value="Pije">Pije</option>
             <option value="Dessert">Dessert</option>
-        </select>
-        <select onChange={handleSubcategoryChange}>
+        </select> */}
+        {/* <select onChange={handleSubcategoryChange}>
          <option value="All">Zgjedhe 1 subkategori</option>
          {availableSubcategories.map(subcategory => (
           <option key={subcategory} value={subcategory}>{subcategory}</option>
           ))}
-    </select>
-          {/* <input
+    </select> */}
+          <input
             type="text"
             name="subcategory"
             value={formData.subcategory}
             onChange={handleInputChange}
             placeholder="Subcategory"
-          /> */}
+          />
           <input
             type="number"
             name="current_count"

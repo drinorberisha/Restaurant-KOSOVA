@@ -27,6 +27,27 @@ console.log(selectedTable);
   const [unpaidItemIds, setUnpaidItemIds] = useState([]);
   const [unpaidItemsDetails, setUnpaidItemsDetails] = useState([]);
 
+  const refreshUnpaidItems = async () => {
+    try {
+      const unpaidOrders = await fetchUnpaidItems(selectedTable);
+      const updatedUnpaidItemsDetails = unpaidOrders.map(order => {
+        const itemDetail = menuItems.find(item => item.item_id === order.itemId);
+        console.log("itemdetail in refresh",itemDetail);
+        return {
+          ...order,
+          name: itemDetail?.item_name,
+          price: itemDetail?.price
+        };
+      });
+  
+      setUnpaidItemsDetails(updatedUnpaidItemsDetails);
+    } catch (error) {
+      console.error("Error refreshing unpaid items:", error);
+    }
+  };
+
+
+
 
 
   useEffect(() => {
@@ -249,6 +270,7 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
   
       const response = await orderCreate(tableNumber, currentTotalPrice, itemsData);
       console.log('Order created:', response);
+      await refreshUnpaidItems();
       console.log("unpaidItemsDetails:",unpaidItemsDetails);
       // Reset state after order creation
       setOrderItems(prevItems => {
@@ -256,10 +278,7 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
         delete updatedItems[tableNumber];
         return updatedItems;
       });
-      setTableTotals(prevTotals => ({
-        ...prevTotals,
-        [tableNumber]: 0 // Reset the total price for this table
-      }));
+     
       // Display success message or handle UI updates
     } catch (error) {
       console.error('Error creating order:', error);
@@ -281,6 +300,16 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
   }, [tableTotals, setNewTableTotals]);
 
 
+  const resetTableTotal = (tableId) => {
+    console.log(`Resetting total for table ${tableId}`);
+    setTableTotals(prevTotals => ({
+      ...prevTotals,
+      [tableId]: 0 
+    }));
+  };
+  
+
+
   return (
     <div className="bg-gray-100 p-2.5 rounded-md h-full flex flex-col">
       <MenuList onSubcategorySelect={setSelectedSubcategory}/>
@@ -296,7 +325,9 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
         totalPrice={tableTotals[selectedTable]} // Total price for the current table        
         onCreateOrder={() => createOrder(selectedTable)}
         selectedTable={selectedTable}
-      />
+        refreshUnpaidItems={refreshUnpaidItems}
+        onResetTableTotals={() => resetTableTotal(selectedTable)}
+        />
     </div>
   );
 };

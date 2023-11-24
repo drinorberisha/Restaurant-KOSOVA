@@ -4,7 +4,7 @@ const db = require('../models/db'); // Adjust path if necessary
 
 exports.addMenuItem = async (req, res) => {
     try {
-        const { item_name, price, category, subcategory } = req.body.data;
+        const { item_name, price, category, subcategory, current_count, minimum_required} = req.body.data;
         if (!item_name || price == null) {
             return res.status(400).json({ message: 'Item name, price, category, and subcategory are required' });
         }

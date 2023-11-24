@@ -9,13 +9,16 @@ function OrderSummary({
   onDelete,
   totalPrice,
   onCreateOrder,
-  selectedTable
+  selectedTable,
+  refreshUnpaidItems,
+  onResetTableTotals,
 }) {
   const currentTableItems = Object.values(orderItems || {}).flat();
   const [totalOrder, setTotalOrder] = useState('currentorder');
-  const handleCreateOrder = () => {
+  const handleCreateOrder = async () => {
     setTotalOrder('totalorder'); 
-    onCreateOrder(); 
+    await onCreateOrder();
+
 
   };
   const currentOrderHandle = () => {
@@ -40,6 +43,9 @@ function OrderSummary({
       const response = await markOrdersAsPaid(selectedTable);
       console.log("Orders marked as paid:", response);
       // Handle the response, e.g., update the UI or show a confirmation message
+      await refreshUnpaidItems();
+      onResetTableTotals();
+      setTotalOrder('currentorder');
     } catch (error) {
       console.error("Error marking orders as paid:", error);
     }
@@ -48,13 +54,16 @@ function OrderSummary({
 
   const priceAndButton = ()=>{
     if (totalOrder === 'totalorder') {
-        return (<div className="flex flex-row mt-2.5 font-bold">
+        return (<div className="flex flex-row justify-between mt-2.5 font-bold">
         <p className="mr-5">Total price: {calculateTotalPrice()}€</p>
+        <div>
         <button className="pay-button" onClick={handleMarkOrdersAsPaid}>Shtyp Faturen</button>
+        <button className="pay-button ml-3" onClick={handleMarkOrdersAsPaid}>Mbyll Tavolinen</button>
+        </div>
       </div>)
     }else{
       return (
-        <div className="flex flex-row mt-2.5 font-bold">
+        <div className="flex flex-row justify-between mt-2.5 font-bold">
         <p className="mr-5">Total price: {totalPrice}€</p>
         <button className="pay-button" onClick={handleCreateOrder}>Shtyp Porosine</button>
       </div>
@@ -67,7 +76,7 @@ function OrderSummary({
       // Render details for unpaid items
       return unpaidItemsDetails.map((item, index) => (
         <div key={index} className="text-white flex justify-between items-center py-1 border-b border-gray-300">
-        {item.item_name} - {item.quantity} items - {item.price}€
+        {item.name} - {item.quantity} items - {item.price}€
       </div>
       ));
     } else {
