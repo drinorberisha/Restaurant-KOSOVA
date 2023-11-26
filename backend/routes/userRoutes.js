@@ -8,5 +8,7 @@ router.post('/check-password', userController.checkPassword);
 router.get('/users', userController.getUsers);
 router.put('/update/:userId',  userController.updateUser);
 router.post('/register',userController.registerUser);
+router.get('/users/:tableId/user', userController.getUserByTableId);
+
 
 module.exports = router;

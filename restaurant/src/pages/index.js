@@ -1,10 +1,13 @@
 // pages/index.js
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import  {menuItems} from "../components/Menu/items";
 import Tables from "../components/Tavolina/tavolina";
 import Nav from "../components/Navigation/nav";
 import Menu from "../components/Menu/menu";
+import { fetchAllTables , getUserByTableId} from "@/utils/api";
+import { useSelector, useDispatch } from 'react-redux';
+import { updateTableTotals } from "../../store/features/tableTotalsSlice";
 
 function Home() {
   const [selectedItem, setSelectedItem] = useState(menuItems[0]);
@@ -13,7 +16,16 @@ function Home() {
 
   const [selectedTable, setSelectedTable] = useState(1);
 
-  const [newTableTotals, setNewTableTotals] = useState({});
+  // const [newTableTotals, setNewTableTotals] = useState({});
+  const dispatch = useDispatch();
+
+
+
+  const handleTableTotalsChange = (updatedTotals) => {
+    dispatch(updateTableTotals(updatedTotals));
+  };
+  const newTableTotals = useSelector((state) => state.tableTotals);
+
     const [tableOrders, setTableOrders] = useState({});
   const calculateTotalPrice = (items) =>
     items.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -29,9 +41,86 @@ function Home() {
       }));
     };
 
-    const handleTableTotalsChange = (newTableTotals) => {
-      setTableTotals(newTableTotals);
+    // const handleTableTotalsChange = (newTableTotals) => {
+    //   setTableTotals(newTableTotals);
+    // };
+
+
+
+    // TABLES FUNCTIONS FROM TABLES.JS
+
+
+    const [myTables, setMyTables] = useState(
+      new Array(32).fill(null).map((_, index) => ({
+        table_id: index + 1,
+        table_number: index + 1,
+        status: "free",
+        current_order_id: null
+      }))
+    );
+    const refreshTables = async () => {
+      try {
+        console.log("Refreshing tables...");
+        const fetchedTables = await fetchAllTables();
+        console.log("Fetched tables:", fetchedTables);
+        setMyTables(fetchedTables);
+      } catch (error) {
+        console.error('Error fetching tables:', error);
+      }
     };
+  
+    useEffect(() => {
+      refreshTables();
+    }, []);
+
+
+    const getBusyTables = () => {
+      return myTables.filter(table => table.status === 'busy').map(table => table.table_id);
+    };
+
+
+    const [userToTable, setUserToTable] = useState({});
+
+    const updateUserToTableMapping = async () => {
+      const busyTableIds = getBusyTables();
+      const newUserToTable = {};
+    
+      for (const tableId of busyTableIds) {
+        try {
+          const user = await fetchUserForTable(tableId);
+          console.log("user after fetching it",user);
+          newUserToTable[tableId] = user;
+        } catch (error) {
+          console.error(`Error fetching user for table ${tableId}:`, error);
+        }
+      }
+    
+      console.log("New user to table mapping for busy tables:", newUserToTable);
+      setUserToTable(newUserToTable);
+    };
+    
+    useEffect(() => {
+      if (myTables && myTables.length > 0) {
+        console.log("Updating user to table mapping for busy tables...");
+        updateUserToTableMapping();
+      }
+    }, [myTables]);
+
+    const fetchUserForTable = async (tableId) => {
+      try {
+        // Update the API call to fetch the complete user object
+        const response = await getUserByTableId(tableId);
+        console.log("This is the response of the getUserByTableId function", response);
+        if (response.message === "No active orders or user found for this table") {
+          return { userId: null, username: 'Free' };
+        }
+        return response;
+      } catch (error) {
+        console.error('Error fetching user for table:', error);
+        return null;
+      }
+    };
+
   return (
     <div className="min-h-screen min-w-full bg-cover bg-no-repeat bg-center bg-login-view overflow-hidden">
       <Nav />
@@ -43,13 +132,12 @@ function Home() {
             orderSummaries={orderSummaries}
             selectedTable={selectedTable}
 
+            refreshTables={refreshTables}
             tableOrders={tableOrders}
             setTableOrders={setTableOrders}
             onOrderItemsChange={handleOrderItemsChange}
-
-            setNewTableTotals={setNewTableTotals}
-
             calculateTotalPrice={calculateTotalPrice}
+            setUserToTable={setUserToTable}
           />
         </div>
         <div className="rounded-lg h-full">
@@ -57,6 +145,9 @@ function Home() {
             selectedTable={selectedTable}
             tableTotals={newTableTotals}
             onSelectTable={handleSelectTable}
+            myTables={myTables}
+            userToTable={userToTable}
+            
           />
         </div>
       </div>

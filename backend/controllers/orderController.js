@@ -1,15 +1,20 @@
 const db = require('../models/db'); // Adjust the path according to your project structure
 exports.createOrder = async (req, res) => {
     try {
-        const { tableId, totalPrice, itemsData = [] } = req.body;
+        const { tableId, totalPrice, itemsData = [], userId } = req.body;
         
         if (!Array.isArray(itemsData)) {
             throw new TypeError("itemsData must be an array");
         }
 
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+
         const newOrder = await db('Orders').insert({
             table_id: tableId,
-            total_price: totalPrice
+            total_price: totalPrice,
+            user_id: userId,
         });
 
         const orderId = newOrder[0];
@@ -23,7 +28,7 @@ exports.createOrder = async (req, res) => {
             await db('OrderItemMenuItems').insert({
                 order_id: orderId,
                 item_id: itemId,
-                quantity: quantity // Include quantity here
+                quantity: quantity
             });
         }
 
@@ -41,7 +46,7 @@ exports.markOrdersAsPaid = async (req, res) => {
       await db('Orders')
         .where({ table_id: tableId, paid: 0 })
         .update({ paid: 1 });
-  
+      await db('Tables').where('table_id', tableId).update({ current_order_id: null });
       res.json({ message: 'Orders marked as paid successfully' });
     } catch (error) {
       console.error('Error marking orders as paid:', error);

@@ -55,8 +55,8 @@ export const updateMenuItem = async (itemId, updates) => {
 
 // Add this function to your existing API utility file
 
-export const orderCreate = async (tableId, totalPrice, itemsData) => {
-  return await apiCall("orders", "create", "POST", { tableId, totalPrice, itemsData });
+export const orderCreate = async (tableId, totalPrice, itemsData, userId) => {
+  return await apiCall("orders", "create", "POST", { tableId, totalPrice, itemsData, userId });
 };
 
 export const fetchAllTableIds = async () => {
@@ -81,5 +81,19 @@ export const fetchUnpaidItems = async (tableId) => {
 export const markOrdersAsPaid = async (tableId) => {
   return await apiCall('orders', `markPaid/${tableId}`, 'POST',{});
 };
+
+
+export const updateTableStatus = async (tableId, status) => {
+  return await apiCall('tables', 'updateStatus', 'PUT', { tableId, status });
+};
+export const getUserByTableId = async (tableId)=>{
+  return await apiCall("users",`${tableId}/user`, "GET")
+};
+
+export const fetchUnpaidTableTotals = async () => {
+  return await apiCall('tables', 'unpaidTotals', 'GET');
+};
+
+
 
 

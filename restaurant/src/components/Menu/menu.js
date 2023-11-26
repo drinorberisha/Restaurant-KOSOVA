@@ -2,26 +2,31 @@ import React, {useEffect, useState} from "react";
 import MenuList from "./menuList/menuList";
 import MenuItemDetail from "./listItems/listItems";
 import OrderSummary from "./orderSummary/orderSummary";
-import { fetchInventoryItems, fetchAllTables, orderCreate, fetchUnpaidItems} from "@/utils/api";
+import { fetchInventoryItems, fetchAllTables, orderCreate, fetchUnpaidItems, updateTableStatus} from "@/utils/api";
+import { useSelector , useDispatch} from 'react-redux';
+import { updateTableTotals } from "../../../store/features/tableTotalsSlice";
 
-const Menu = ({ selectedTable,  onOrderItemsChange,setNewTableTotals,}) => {
-
-
+const Menu = ({ selectedTable,  onOrderItemsChange, refreshTables, setUserToTable}) => {
+  const updateTotals = (updatedTotals) => {
+    dispatch(updateTableTotals(updatedTotals));
+  };
+  const tableTotals = useSelector(state => state.tableTotals);
+  const dispatch = useDispatch();
 console.log(selectedTable);
 
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const [orderItems, setOrderItems] = useState({});
 
-  const [tableTotals, setTableTotals] = useState({});
-  const [tables, setTables] = useState(
-    new Array(16).fill(null).map((_, index) => ({
-      table_id: index + 1,
-      table_number: index + 1,
-      status: "free",
-      current_order_id: null
-    }))
-  );
+  const newTableTotals = useSelector(state => state.newTableTotals);  
+  // const [tables, setTables] = useState(
+  //   new Array(16).fill(null).map((_, index) => ({
+  //     table_id: index + 1,
+  //     table_number: index + 1,
+  //     status: "free",
+  //     current_order_id: null
+  //   }))
+  // );
 
   const [unpaidItemsDetails, setUnpaidItemsDetails] = useState([]);
 
@@ -91,29 +96,29 @@ console.log(selectedTable);
 
 
 
-  useEffect(() => {
-    const initializeTables = async () => {
-      try {
-        const tableData = await fetchAllTables();
-        setTables(tableData);
-      } catch (error) {
-        console.error('Error fetching tables:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const initializeTables = async () => {
+  //     try {
+  //       const tableData = await fetchAllTables();
+  //       setTables(tableData);
+  //     } catch (error) {
+  //       console.error('Error fetching tables:', error);
+  //     }
+  //   };
 
-    initializeTables();
+  //   initializeTables();
 
-    // const loadMenuItems = async () => {
-    //   try {
-    //     const items = await fetchInventoryItems();
-    //     setMenuItems(items);
-    //   } catch (error) {
-    //     console.error('Error fetching menu items:', error);
-    //   }
-    // };
+  //   // const loadMenuItems = async () => {
+  //   //   try {
+  //   //     const items = await fetchInventoryItems();
+  //   //     setMenuItems(items);
+  //   //   } catch (error) {
+  //   //     console.error('Error fetching menu items:', error);
+  //   //   }
+  //   // };
 
-    // loadMenuItems();
-  }, []);
+  //   // loadMenuItems();
+  // }, []);
 
 
 
@@ -138,28 +143,20 @@ console.log(selectedTable);
         price: item.price,
         quantity: currentQuantity + 1
       };
-
+  
       const newTotal = Object.values(updatedItems[tableId]).reduce(
         (sum, currItem) => sum + (currItem.price * currItem.quantity),
         0
       );
-      setTableTotals(prevTotals => {
-        
-        console.log("Selected Table:", selectedTable);
-        console.log("Order Items for Selected Table:", orderItems[selectedTable]);
-        console.log("the calculation of total:",newTotal)
-        return { ...prevTotals, [tableId]: newTotal };
-      });
-
-
-
-
+      updateTotals({ ...newTableTotals, [tableId]: newTotal });
+  
       if (onOrderItemsChange) {
         onOrderItemsChange(orderItems);
       }
       return updatedItems;
     });
   };
+  
   
   const onIncrement = (itemId) => {
     setOrderItems(prevItems => {
@@ -170,14 +167,14 @@ console.log(selectedTable);
         updatedItems[tableId][itemId].quantity += 1;
   
         // Update total price here
-       setTableTotals(prevTotals => {
+      
         const newTotal = calculateTotalPrice(orderItems[tableId]);
         console.log("Selected Table:", selectedTable);
         console.log("Order Items for Selected Table:", orderItems[selectedTable]);
         console.log("the calculation of total:",newTotal)
-        return { ...prevTotals, [tableId]: newTotal };
-      });
-      }
+        updateTotals({ ...newTableTotals, [tableId]: newTotal });
+        };
+      
       if (onOrderItemsChange) {
         onOrderItemsChange(orderItems);
       }
@@ -186,19 +183,17 @@ console.log(selectedTable);
   };
   
   const onDecrement = (itemId) => {
-    console.log("itemId from onDecrement fucntion", itemId);
+    console.log("itemId from onDecrement function", itemId);
     setOrderItems(prevItems => {
       const updatedItems = { ...prevItems };
       const tableId = selectedTable;
   
       if (updatedItems[tableId] && updatedItems[tableId][itemId] && updatedItems[tableId][itemId].quantity > 1) {
         updatedItems[tableId][itemId].quantity -= 1;
-  
+        
         // Update total price here
-        setTableTotals(prevTotals => ({
-          ...prevTotals,
-          [selectedTable]: calculateTotalPrice(orderItems[selectedTable])
-        }));
+        const updatedTotal = calculateTotalPrice(updatedItems[selectedTable]);
+        updateTotals({ ...newTableTotals, [selectedTable]: updatedTotal });
       }
       if (onOrderItemsChange) {
         onOrderItemsChange(orderItems);
@@ -206,6 +201,7 @@ console.log(selectedTable);
       return updatedItems;
     });
   };
+  
   
 
   
@@ -219,10 +215,7 @@ console.log(selectedTable);
   
         // Update total price here
         const updatedTotal = calculateTotalPrice(updatedItems[tableId]);
-        setTableTotals(prevTotals => ({
-          ...prevTotals,
-          [tableId]: updatedTotal
-        }));
+        updateTotals({ ...newTableTotals, [tableId]: updatedTotal });
       }
       if (onOrderItemsChange) {
         onOrderItemsChange(orderItems);
@@ -230,6 +223,7 @@ console.log(selectedTable);
       return updatedItems;
     });
   };
+  
   
   const calculateTotalPrice = (items) => {
     if (!items) {
@@ -248,8 +242,8 @@ console.log(selectedTable);
 const [checkOrderItems, setCheckOrderItems] = useState([]);
 
   const createOrder = async (tableNumber) => {
-    const currentTotalPrice = tableTotals[tableNumber] || 0; // Get the total price from tableTotals
-
+    const currentTotalPrice = tableTotals[tableNumber] || 0; 
+    const userId = localStorage.getItem("userId");
     if (!tableNumber) {
       console.error('Table ID not found for the selected table number');
       return;
@@ -266,11 +260,13 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
       console.log("current total price before api call", currentTotalPrice);
       // Modify the API call to include itemIds
   
-      const response = await orderCreate(tableNumber, currentTotalPrice, itemsData);
+      const response = await orderCreate(tableNumber, currentTotalPrice, itemsData, userId);
       console.log('Order created:', response);
       await refreshUnpaidItems();
       console.log("unpaidItemsDetails:",unpaidItemsDetails);
-      // Reset state after order creation
+      await updateTableStatus(selectedTable, 'busy');
+
+      await refreshTables();
       setOrderItems(prevItems => {
         const updatedItems = { ...prevItems };
         delete updatedItems[tableNumber];
@@ -292,19 +288,14 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
   // };
   console.log("FROM menu.js: selectedTable",selectedTable);
 
-  useEffect(() => {
-    // Update newTableTotals in the parent component whenever tableTotals changes
-    setNewTableTotals(tableTotals);
-  }, [tableTotals, setNewTableTotals]);
+
 
 
   const resetTableTotal = (tableId) => {
     console.log(`Resetting total for table ${tableId}`);
-    setTableTotals(prevTotals => ({
-      ...prevTotals,
-      [tableId]: 0 
-    }));
+    updateTotals({ ...newTableTotals, [tableId]: 0 });
   };
+  
   //START  SEARCH INPUT
   const [searchInput, setSearchInput] = useState('');
   const [autoSelectedSubcategory, setAutoSelectedSubcategory] = useState(null);
@@ -338,11 +329,13 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
         onIncrement={(item) => onIncrement(item)}
         onDecrement={(item) => onDecrement(item)}
         onDelete={(item) => onDelete(item)}
-        totalPrice={tableTotals[selectedTable]} // Total price for the current table        
+        totalPrice={tableTotals[selectedTable]}   
         onCreateOrder={() => createOrder(selectedTable)}
         selectedTable={selectedTable}
         refreshUnpaidItems={refreshUnpaidItems}
         onResetTableTotals={() => resetTableTotal(selectedTable)}
+        refreshTables={refreshTables}
+        setUserToTable={setUserToTable}
         />
     </div>
   );

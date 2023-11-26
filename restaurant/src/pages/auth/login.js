@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import styles from './LoginPage.module.css'; // Adjust the path to your CSS module
 import Image from "next/image";
 import background from "../../../public/loginView.jpg";
 import sticknote from "../../../public/sticknote.png"; // Import the sticknote.png for the logo
 import menuImage from "../../../public/menu.jpg"; // Import the menu.png image
-import axios from "axios";
-import { loginUser } from "@/utils/api";
-
+import { fetchUnpaidTableTotals, loginUser } from "@/utils/api";
+import { useDispatch } from 'react-redux';
+import { updateTotals } from "../../../store/features/tableTotalsSlice";
 const LoginPage = () => {
   const [inputValue, setInputValue] = useState(""); 
   const router = useRouter();
+  const dispatch = useDispatch();
  
   const checkPassword = async (password) => {
     try {
@@ -18,8 +19,11 @@ const LoginPage = () => {
         console.log(response);
         if (response && response.role){
             console.log('Password is correct');
+            localStorage.setItem("userId",response.user_id);
             localStorage.setItem("userRole",response.role);
             localStorage.setItem("isActive", true);
+            const totals = await fetchTableTotals();
+            dispatch(updateTotals(totals));
             router.push("/");
             window.location.reload();
 
@@ -49,8 +53,18 @@ const LoginPage = () => {
   const handleBackspaceClick = () => {
     setInputValue((prevValue) => prevValue.slice(0, -1)); // Remove the last character
   };
-
-
+  const fetchTableTotals = async () => {
+    try {
+      // Replace with your actual API call
+      const response = await fetchUnpaidTableTotals();
+      console.log("AFTER LOGIN, totals of unpaid orders:",response);
+      dispatch(updateTableTotals(totals));
+            return response.data;
+    } catch (error) {
+      console.error('Error fetching table totals:', error);
+      return {};
+    }
+  };
   return (
     <div className={styles.background}>
       {/* <NavPage/> */}

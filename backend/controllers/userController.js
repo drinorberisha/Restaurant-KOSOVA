@@ -72,3 +72,34 @@ exports.getUsers = async (req, res) => {
       res.status(500).send('Server error');
     }
   };
+
+  exports.getUserByTableId = async (req, res) => {
+    const { tableId } = req.params;
+    try {
+      // First, get the user_id associated with the active order for this table
+      const order = await db('Orders')
+          .select('user_id')
+          .where({ table_id: tableId, paid: 0 })
+          .first();
+
+      if (!order || !order.user_id) {
+          return res.status(404).json({ message: 'No active orders or user found for this table' });
+      }
+
+      // Then, fetch the entire user object using the user_id
+      const user = await db('users')
+          .where({ user_id: order.user_id })
+          .first();
+
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json(user);
+  } catch (error) {
+      console.error('Error fetching user for table:', error);
+      res.status(500).json({ message: 'Error fetching user for table' });
+  }
+};
+
+

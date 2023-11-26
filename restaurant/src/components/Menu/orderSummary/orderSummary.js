@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { markOrdersAsPaid } from "@/utils/api"; 
+import { markOrdersAsPaid, updateTableStatus } from "@/utils/api"; 
 
 function OrderSummary({
   orderItems,
@@ -12,6 +12,8 @@ function OrderSummary({
   selectedTable,
   refreshUnpaidItems,
   onResetTableTotals,
+  refreshTables,
+  setUserToTable
 }) {
   const currentTableItems = Object.values(orderItems || {}).flat();
   const [totalOrder, setTotalOrder] = useState('currentorder');
@@ -40,8 +42,11 @@ function OrderSummary({
 
   const handleMarkOrdersAsPaid = async () => {
     try {
+      await updateTableStatus(selectedTable, 'free');
+
       const response = await markOrdersAsPaid(selectedTable);
       console.log("Orders marked as paid:", response);
+      await refreshTables();
       // Handle the response, e.g., update the UI or show a confirmation message
       await refreshUnpaidItems();
       onResetTableTotals();
