@@ -6,10 +6,12 @@ import Tables from "../../../public/Tables.png"
 import Inventory from "../../../public/Inventory.png";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
+import { useDispatch } from "react-redux";
+import { resetTotals } from "../../../store/features/tableTotalsSlice";
 
 const Nav = () => {
   const router = useRouter();
+  const dispatch = useDispatch(); // Hook to dispatch actions
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     const active = localStorage.getItem("isActive");
@@ -41,6 +43,7 @@ const Nav = () => {
   const logoutFunc = () => {
     localStorage.setItem("isActive", false);
     localStorage.removeItem("userRole");
+    dispatch(resetTotals()); // Dispatch the reset action
     router.push("/auth/login");
     window.location.reload();
   };

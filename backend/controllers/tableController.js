@@ -54,16 +54,18 @@ exports.updateTableStatus = async (req, res) => {
 
 exports.calculateUnpaidTotals = async (req, res) => {
     try {
-        // Assuming 'db' is your database instance
-        const totals = await db('Orders')
+        // Fetch the results from the database
+        const results = await db('Orders')
             .where('paid', 0)
             .groupBy('table_id')
             .select('table_id')
-            .sum('total_price as total')
-            .reduce((acc, item) => {
-                acc[item.table_id] = item.total;
-                return acc;
-            }, {});
+            .sum('total_price as total');
+
+        // Now use reduce on the fetched results array
+        const totals = results.reduce((acc, item) => {
+            acc[item.table_id] = item.total;
+            return acc;
+        }, {});
 
         res.json(totals);
     } catch (error) {
@@ -71,6 +73,7 @@ exports.calculateUnpaidTotals = async (req, res) => {
         res.status(500).send('Error calculating unpaid totals');
     }
 };
+
 
 
 // You can add more functions as needed for other table-related operations

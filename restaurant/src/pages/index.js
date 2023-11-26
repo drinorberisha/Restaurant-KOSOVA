@@ -27,8 +27,7 @@ function Home() {
   const newTableTotals = useSelector((state) => state.tableTotals);
 
     const [tableOrders, setTableOrders] = useState({});
-  const calculateTotalPrice = (items) =>
-    items.reduce((total, item) => total + item.price * item.quantity, 0);
+
 
     const handleSelectTable = (tableNumber) => {
   
@@ -47,7 +46,6 @@ function Home() {
 
 
 
-    // TABLES FUNCTIONS FROM TABLES.JS
 
 
     const [myTables, setMyTables] = useState(
@@ -127,23 +125,15 @@ function Home() {
       <div className="grid grid-cols-2 gap-5 p-2.5 max-h-full">
         <div className="h-full">
           <Menu
-            selectedItem={selectedItem}
-            onSelectItem={setSelectedItem}
-            orderSummaries={orderSummaries}
             selectedTable={selectedTable}
-
             refreshTables={refreshTables}
-            tableOrders={tableOrders}
-            setTableOrders={setTableOrders}
             onOrderItemsChange={handleOrderItemsChange}
-            calculateTotalPrice={calculateTotalPrice}
             setUserToTable={setUserToTable}
           />
         </div>
         <div className="rounded-lg h-full">
           <Tables
             selectedTable={selectedTable}
-            tableTotals={newTableTotals}
             onSelectTable={handleSelectTable}
             myTables={myTables}
             userToTable={userToTable}

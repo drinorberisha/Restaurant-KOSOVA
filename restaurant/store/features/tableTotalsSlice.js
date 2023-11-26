@@ -12,10 +12,11 @@ export const tableTotalsSlice = createSlice({
     updateTotals: (state, action) => {
           return action.payload;
     },
+    resetTotals: () => ({}),
     // Add more reducers if needed
   },
 });
 
-export const { updateTableTotals,updateTotals } = tableTotalsSlice.actions;
+export const { updateTableTotals,updateTotals ,resetTotals} = tableTotalsSlice.actions;
 
 export default tableTotalsSlice.reducer;
