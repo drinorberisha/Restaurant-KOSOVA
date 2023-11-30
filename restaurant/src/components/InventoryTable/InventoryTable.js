@@ -179,82 +179,46 @@ const InventoryTable = () => {
     return matchesCategory && matchesSubcategory && matchesSearchTerm;
   });
 
-  // const renderTableCell = (item, fieldName, type = "text") => {
-  //   const commonClasses = "border px-4 py-2"; // Common classes for all table cells
-  //   const widthClass = "w-32"; // Width class for inputs and cells
-
-  //   let content =
-  //     editingItemId === item.item_id ? (
-  //       <input
-  //         className={`${widthClass} p-1`}
-  //         type={type}
-  //         name={fieldName}
-  //         value={editFormData[fieldName]}
-  //         onChange={handleEditFormChange}
-  //       />
-  //     ) : (
-  //       <span className={widthClass}>{item[fieldName]}</span>
-  //     );
-
-  //   if (
-  //     fieldName === "current_count" &&
-  //     canAdjustStock() &&
-  //     editingItemId !== item.item_id
-  //   ) {
-  //     content = (
-  //       <div className="flex items-center justify-between">
-  //         <span className={widthClass}>{item[fieldName]}</span>
-  //         <div>
-  //           <button
-  //             className="border mx-1 p-1"
-  //             onClick={() => adjustStock(item.item_id, 1)}
-  //           >
-  //             +
-  //           </button>
-  //           <button
-  //             className="border mx-1 p-1"
-  //             onClick={() => adjustStock(item.item_id, -1)}
-  //           >
-  //             -
-  //           </button>
-  //         </div>
-  //       </div>
-  //     );
-  //   }
-
-  //   return <td className={`${commonClasses} ${widthClass}`}>{content}</td>;
-  // };
-
   const renderTableCell = (item, fieldName, type = "text") => {
-    let content =
-      editingItemId === item.item_id ? (
-        <input
-          type={type}
-          name={fieldName}
-          value={editFormData[fieldName]}
-          onChange={handleEditFormChange}
-        />
-      ) : (
-        <span>{item[fieldName]}</span>
-      );
-
+    const cellStyle = "border px-0 py-0"; // Common cell styling
+    const inputStyle = "border-0 w-full h-full text-center"; // Input styling to fill the cell
+  
+    let content = editingItemId === item.item_id ? (
+      <input
+        type={type}
+        size={8}
+        name={fieldName}
+        value={editFormData[fieldName]}
+        onChange={handleEditFormChange}
+        className={`${inputStyle}`} // Apply input styles
+        style={{
+          maxWidth: '100%', // Ensures the input does not exceed the cell width
+          padding: '0px', // Matches the cell padding
+          lineHeight: '1.5', // Adjust line height to match non-editable cell content
+          boxSizing: 'border-box', // Include padding and border in the width and height
+        }}
+      />
+    ) : (
+      <span className="text-center block overflow-hidden overflow-ellipsis whitespace-nowrap">{item[fieldName]}</span> // Use block to fill the cell
+    );
+  
     if (
       fieldName === "current_count" &&
       canAdjustStock() &&
       editingItemId !== item.item_id
     ) {
       content = (
-        <div className="flex justify-between items-center">
-          {content}
-          <div>
+        <div className="flex items-center justify-between h-full">
+          <span className="flex-grow">{item[fieldName]}</span>
+          <div className="flex flex-row items-center justify-end">
             <button
-              className="border border-1 mx-1 p-1"
+              className="border mx-1 p-1"
               onClick={() => adjustStock(item.item_id, 1)}
             >
               +
             </button>
             <button
-              className="border border-1 mx-1 p-1"
+              className="border mx-1 p-1"
               onClick={() => adjustStock(item.item_id, -1)}
             >
               -
@@ -263,9 +227,10 @@ const InventoryTable = () => {
         </div>
       );
     }
-
-    return <td className="border px-4 py-2">{content}</td>;
+  
+    return <td className={`${cellStyle}`}>{content}</td>;
   };
+  
 
   ///// FILTER FINISH
 
@@ -300,8 +265,8 @@ const InventoryTable = () => {
           </select>
         </div>
       </div>
-      <div className="table-container" style={{ maxHeight: '75vh', overflowY: 'auto' }}>
-      <table className="min-w-full table-auto">
+      <div className="table-container" style={{ height: '75vh', overflowY: 'auto' }}>
+      <table className="min-w-full table-fixed">
         <thead>
           <tr>
             <th className="px-4 py-2 border">Item Name</th>
@@ -357,7 +322,7 @@ const InventoryTable = () => {
       {userRole === "admin" && (
         <button
           onClick={handleAddClick}
-          className="bg-blue-500 text-white p-2 rounded"
+          className="bg-blue-500 text-white p-2 mt-2 rounded"
         >
           Add New Product
         </button>

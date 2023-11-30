@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { markOrdersAsPaid, updateTableStatus } from "@/utils/api";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { markOrdersAsPaid, updateTableStatus } from '@/utils/api';
+import { useSelector } from 'react-redux';
 
 function OrderSummary({
   orderItems,
@@ -18,21 +18,21 @@ function OrderSummary({
   const userToTable = useSelector((state) => state.userTable);
   const myTables = useSelector((state) => state.myTables.tables);
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const currentTableItems = Object.values(orderItems || {}).flat();
-  const [totalOrder, setTotalOrder] = useState("currentorder");
+  const [totalOrder, setTotalOrder] = useState('currentorder');
   const handleCreateOrder = async () => {
-    setTotalOrder("totalorder");
+    setTotalOrder('totalorder');
     await onCreateOrder();
   };
   const currentOrderHandle = () => {
-    setTotalOrder("currentorder");
+    setTotalOrder('currentorder');
   };
 
   const totalOrderHandle = () => {
-    setTotalOrder("totalorder");
+    setTotalOrder('totalorder');
   };
   const calculateTotalPrice = () => {
     return unpaidItemsDetails.reduce((total, item) => {
@@ -45,10 +45,10 @@ function OrderSummary({
     const selectedTableStatus = myTables.find(
       (table) => table.table_id === selectedTable
     )?.status;
-    if (selectedTableStatus === "free") {
-      setTotalOrder("currentorder");
+    if (selectedTableStatus === 'free') {
+      setTotalOrder('currentorder');
     } else {
-      setTotalOrder("totalorder");
+      setTotalOrder('totalorder');
     }
   }, [selectedTable, myTables]);
 
@@ -56,46 +56,46 @@ function OrderSummary({
 
   const handleMarkOrdersAsPaid = async () => {
     try {
-      const userId = localStorage.getItem("userId");
+      const userId = localStorage.getItem('userId');
 
       if (!userId) {
-        console.error("User ID not found");
+        console.error('User ID not found');
         return;
       }
 
-      await updateTableStatus(selectedTable, "free");
+      await updateTableStatus(selectedTable, 'free');
 
       const response = await markOrdersAsPaid(selectedTable, userId);
 
-      console.log("Orders marked as paid:", response);
-      setErrorMessage(""); // Clear any previous error messages
+      console.log('Orders marked as paid:', response);
+      setErrorMessage(''); // Clear any previous error messages
       await refreshTables();
       // Handle the response, e.g., update the UI or show a confirmation message
       await refreshUnpaidItems();
       onResetTableTotals();
-      setTotalOrder("currentorder");
-      setSuccessMessage("Pagesa eshte kryer me sukses! Fatura po shtypet.");
-      setTimeout(() => setSuccessMessage(""), 2000);
+      setTotalOrder('currentorder');
+      setSuccessMessage('Pagesa eshte kryer me sukses! Fatura po shtypet.');
+      setTimeout(() => setSuccessMessage(''), 2000);
     } catch (error) {
-      console.error("Error marking orders as paid:", error);
+      console.error('Error marking orders as paid:', error);
       if (error.response && error.response.status === 403) {
         setErrorMessage(error.response.data.message);
-        setTimeout(() => setErrorMessage(""), 3000);
-        updateTableStatus(selectedTable, "busy");
+        setTimeout(() => setErrorMessage(''), 3000);
+        updateTableStatus(selectedTable, 'busy');
       } else {
-        setErrorMessage("An error occurred while processing your request.");
-        setTimeout(() => setErrorMessage(""), 3000);
+        setErrorMessage('An error occurred while processing your request.');
+        setTimeout(() => setErrorMessage(''), 3000);
       }
     }
   };
 
   const priceAndButton = () => {
     const greenButtonClasses =
-      "bg-green-500 text-white font-bold py-1 px-2 rounded-full";
+      'bg-green-500 text-white font-bold py-1 px-2 rounded-full';
     const redButtonClasses =
-      "bg-red-500 text-white font-bold py-1 px-2 rounded-full";
+      'bg-red-500 text-white font-bold py-1 px-2 rounded-full';
 
-    if (totalOrder === "totalorder") {
+    if (totalOrder === 'totalorder') {
       return (
         <div className="flex flex-row justify-between mt-2.5">
           <p className="mr-5">Total price: {calculateTotalPrice()}€</p>
@@ -135,7 +135,7 @@ function OrderSummary({
   };
 
   const renderItems = () => {
-    if (totalOrder === "totalorder") {
+    if (totalOrder === 'totalorder') {
       // Render details for unpaid items
       return unpaidItemsDetails.map((item, index) => (
         <div
@@ -179,7 +179,7 @@ function OrderSummary({
   };
 
   return (
-    <div className="h-[43%] pt-1.5 ">
+    <div className="h-[45%] pt-1.5 ">
       <div>
         {errorMessage && <div className="error-message">{errorMessage}</div>}
       </div>
@@ -194,9 +194,9 @@ function OrderSummary({
         <div>
           <button
             className={`transition duration-300 ease-in-out border-2 mr-5 px-4 py-2 text-sm font-medium tracking-wide rounded-full ${
-              totalOrder === "currentorder"
-                ? "bg-green-500 border-black"
-                : "border-black"
+              totalOrder === 'currentorder'
+                ? 'bg-gray-500 border-black'
+                : 'border-black'
             }`}
             onClick={currentOrderHandle}
           >
@@ -204,9 +204,9 @@ function OrderSummary({
           </button>
           <button
             className={`transition duration-300 ease-in-out border-2 px-4 py-2 text-sm font-medium tracking-wide rounded-full ${
-              totalOrder === "totalorder"
-                ? "bg-green-500 border-black"
-                : "border-black"
+              totalOrder === 'totalorder'
+                ? 'bg-gray-500 border-black'
+                : 'border-black'
             }`}
             onClick={totalOrderHandle}
           >
@@ -216,7 +216,7 @@ function OrderSummary({
       </div>
       <div
         className="border border-gray-300 rounded-2xl px-2.5 mt-2.5 mb-2.5 overflow-y-auto bg-cover bg-no-repeat bg-fixed bg-[url('/loginView.jpg')] bg-center bg-blend-darken"
-        style={{ height: "27vh" }}
+        style={{ height: '27vh' }}
       >
         {renderItems()}
       </div>

@@ -144,7 +144,7 @@ function MenuList({
   };
 
   return (
-    <div className="flex flex-col h-[37%]">
+    <div className="flex flex-col h-[35%]">
       <div className="relative mb-0 h-1/5">
         <input
           className="w-full p-2.5 text-lg box-border"
