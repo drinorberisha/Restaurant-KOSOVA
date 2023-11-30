@@ -17,6 +17,8 @@ console.log(selectedTable);
 
 
 const [errorMessage, setErrorMessage] = useState('');
+const [successMessage, setSuccessMessage] = useState('');
+
 
 
 
@@ -329,7 +331,8 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
         delete updatedItems[tableNumber];
         return updatedItems;
       });
-     
+      setSuccessMessage("Porosia eshte shtypur me sukses");
+      setTimeout(() => setSuccessMessage(''), 2000); 
       // Display success message or handle UI updates
     } catch (error) {
       console.error('Error creating order:', error);
@@ -382,8 +385,11 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
 
   return (
     <div className="bg-gray-100 p-2.5 rounded-md h-full flex flex-col">
-       <div>
+      <div>
     {errorMessage && <div className="error-message">{errorMessage}</div>}
+  </div>
+  <div>
+    {successMessage && <div className="success-message">{successMessage}</div>}
   </div>
       <MenuList onSubcategorySelect={setSelectedSubcategory} category={getCategoryFromSubcategory(selectedSubcategory)} onSearchInputChange={handleMenuSearchChange} searchInput={searchInput}   setSearchInput={setSearchInput}/>
       <div className="border-t border-gray-900"></div>{" "}

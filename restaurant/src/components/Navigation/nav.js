@@ -13,7 +13,7 @@ import { clearUserTableMapping } from "../../../store/features/userTableSlice";
 
 const Nav = () => {
   const router = useRouter();
-  const dispatch = useDispatch(); // Hook to dispatch actions
+  const dispatch = useDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     const active = localStorage.getItem("isActive");

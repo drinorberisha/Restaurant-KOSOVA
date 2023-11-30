@@ -21,6 +21,8 @@ function OrderSummary({
   const myTables = useSelector(state => state.myTables.tables); 
 
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
 
   const currentTableItems = Object.values(orderItems || {}).flat();
   const [totalOrder, setTotalOrder] = useState('currentorder');
@@ -77,15 +79,18 @@ function OrderSummary({
       await refreshUnpaidItems();
       onResetTableTotals();
       setTotalOrder('currentorder');
+      setSuccessMessage("Pagesa eshte kryer me sukses! Fatura po shtypet.");
+      setTimeout(() => setSuccessMessage(''), 2000); 
+
     } catch (error) {
       console.error("Error marking orders as paid:", error);
       if (error.response && error.response.status === 403) {
         setErrorMessage(error.response.data.message);
-        setTimeout(() => setErrorMessage(''), 3000); // Hide after 5 seconds
+        setTimeout(() => setErrorMessage(''), 3000); 
         updateTableStatus(selectedTable, "busy");
       } else {
         setErrorMessage("An error occurred while processing your request.");
-        setTimeout(() => setErrorMessage(''), 3000); // Hide after 5 seconds
+        setTimeout(() => setErrorMessage(''), 3000); 
       }
     }
   };
@@ -146,6 +151,9 @@ function OrderSummary({
     <div className="h-[40%] ">
       <div>
     {errorMessage && <div className="error-message">{errorMessage}</div>}
+  </div>
+  <div>
+    {successMessage && <div className="success-message">{successMessage}</div>}
   </div>
 
       <div className="flex flex-row justify-between"> 
