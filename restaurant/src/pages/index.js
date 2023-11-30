@@ -8,6 +8,7 @@ import Menu from "../components/Menu/menu";
 import { fetchAllTables , getUserByTableId} from "@/utils/api";
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTableTotals } from "../../store/features/tableTotalsSlice";
+import { setUserTableMapping } from "../../store/features/userTableSlice";
 
 function Home() {
   const [selectedItem, setSelectedItem] = useState(menuItems[0]);
@@ -94,8 +95,8 @@ function Home() {
       }
     
       console.log("New user to table mapping for busy tables:", newUserToTable);
-      setUserToTable(newUserToTable);
-    };
+      dispatch(setUserTableMapping(newUserToTable));
+        };
     
     useEffect(() => {
       if (myTables && myTables.length > 0) {
@@ -128,7 +129,8 @@ function Home() {
             selectedTable={selectedTable}
             refreshTables={refreshTables}
             onOrderItemsChange={handleOrderItemsChange}
-            setUserToTable={setUserToTable}
+            userToTable={userToTable}
+
           />
         </div>
         <div className="rounded-lg h-full">

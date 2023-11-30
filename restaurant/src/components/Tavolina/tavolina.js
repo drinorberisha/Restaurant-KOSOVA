@@ -5,11 +5,13 @@ import backgroundImage from "../../../public/bg2.jpg";
 import Image from "next/image";
 import { useSelector } from 'react-redux'; // Import useSelector
 
-function Tables({ selectedTable, onSelectTable , myTables, userToTable}) {
+function Tables({ selectedTable, onSelectTable , myTables}) {
   const [selectedPlacement, setSelectedPlacement] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedWaiter, setSelectedWaiter] = useState('all');
+
   
+  const userToTable = useSelector(state => state.userTable);
 
   const tableTotals = useSelector(state => state.tableTotals); // Access tableTotals from Redux
 

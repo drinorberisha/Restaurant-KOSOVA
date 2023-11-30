@@ -8,6 +8,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { resetTotals } from "../../../store/features/tableTotalsSlice";
+import { clearUserTableMapping } from "../../../store/features/userTableSlice";
+
 
 const Nav = () => {
   const router = useRouter();
@@ -47,6 +49,7 @@ const Nav = () => {
   
     // Reset table totals in Redux store
     dispatch(resetTotals());
+    dispatch(clearUserTableMapping());
   
     // Short timeout to allow state update to propagate
     setTimeout(() => {

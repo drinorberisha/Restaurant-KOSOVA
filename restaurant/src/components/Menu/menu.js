@@ -2,11 +2,11 @@ import React, {useEffect, useState} from "react";
 import MenuList from "./menuList/menuList";
 import MenuItemDetail from "./listItems/listItems";
 import OrderSummary from "./orderSummary/orderSummary";
-import { fetchInventoryItems, fetchAllTables, orderCreate, fetchUnpaidItems, updateTableStatus} from "@/utils/api";
+import { fetchInventoryItems, orderCreate, fetchUnpaidItems, updateTableStatus} from "@/utils/api";
 import { useSelector , useDispatch} from 'react-redux';
 import { updateTableTotals } from "../../../store/features/tableTotalsSlice";
 
-const Menu = ({ selectedTable,  onOrderItemsChange, refreshTables, setUserToTable}) => {
+const Menu = ({ selectedTable,  onOrderItemsChange, refreshTables}) => {
   const updateTotals = (updatedTotals) => {
     dispatch(updateTableTotals(updatedTotals));
   };
@@ -17,7 +17,6 @@ console.log(selectedTable);
 
 
 const [errorMessage, setErrorMessage] = useState('');
-
 
 
 
@@ -84,7 +83,7 @@ const [errorMessage, setErrorMessage] = useState('');
   
           const itemsDetails = itemsWithQuantities.map(({ itemId, quantity }) => {
             const itemDetails = menuItems.find(item => item.item_id === itemId);
-            return { ...itemDetails, quantity };
+            return { ...itemDetails,name: itemDetails?.item_name, quantity };
           });
   
           console.log("Items details including quantities:", itemsDetails);
@@ -134,7 +133,25 @@ const [errorMessage, setErrorMessage] = useState('');
     return item ? item.category : 'All';
   };
 
+
+  const userToTable = useSelector(state => state.userTable);
+
   const onAddToOrder = (item) => {
+   
+ console.log("THIS IS USER TO TABLE", userToTable);
+  // Check if the current user is allowed to modify the order
+  const userId = parseInt(localStorage.getItem("userId"));
+  const tableUserId = userToTable[selectedTable]?.user_id;
+
+  console.log(`Current User ID: ${userId} (type: ${typeof userId}), Table User ID: ${tableUserId} (type: ${typeof tableUserId}), Selected Table: ${selectedTable}`);
+
+  // Check if the current user is allowed to modify the order
+  if (tableUserId && userId !== tableUserId) {
+    console.error("You are not authorized to modify this order.");
+    setErrorMessage("Nuk jeni te lejuar te shtoni ne kete tavoline!");
+    setTimeout(() => setErrorMessage(''), 3000); // Hide after 5 seconds
+    return; // Exit the function if not authorized
+  }
     setOrderItems(prevItems => {
       const tableId = selectedTable;
       const updatedItems = { ...prevItems };
@@ -166,6 +183,19 @@ const [errorMessage, setErrorMessage] = useState('');
   
   
   const onIncrement = (itemId) => {
+
+    const userId = parseInt(localStorage.getItem("userId"));
+    const tableUserId = userToTable[selectedTable]?.user_id;
+  
+    console.log(`Current User ID: ${userId} (type: ${typeof userId}), Table User ID: ${tableUserId} (type: ${typeof tableUserId}), Selected Table: ${selectedTable}`);
+  
+    // Check if the current user is allowed to modify the order
+    if (tableUserId && userId !== tableUserId) {
+      console.error("You are not authorized to modify this order.");
+      setErrorMessage("Nuk jeni te lejuar te shtoni ne kete tavoline!");
+      setTimeout(() => setErrorMessage(''), 3000); // Hide after 5 seconds
+      return; // Exit the function if not authorized
+    }
     setOrderItems(prevItems => {
       const updatedItems = { ...prevItems };
       const tableId = selectedTable;
@@ -190,6 +220,19 @@ const [errorMessage, setErrorMessage] = useState('');
   };
   
   const onDecrement = (itemId) => {
+
+   const userId = parseInt(localStorage.getItem("userId"));
+  const tableUserId = userToTable[selectedTable]?.user_id;
+
+  console.log(`Current User ID: ${userId} (type: ${typeof userId}), Table User ID: ${tableUserId} (type: ${typeof tableUserId}), Selected Table: ${selectedTable}`);
+
+  // Check if the current user is allowed to modify the order
+  if (tableUserId && userId !== tableUserId) {
+      console.error("You are not authorized to modify this order.");
+      setErrorMessage("Nuk jeni te lejuar te shtoni ne kete tavoline!");
+      setTimeout(() => setErrorMessage(''), 3000); // Hide after 5 seconds
+      return; // Exit the function if not authorized
+    }
     console.log("itemId from onDecrement function", itemId);
     setOrderItems(prevItems => {
       const updatedItems = { ...prevItems };
@@ -213,6 +256,19 @@ const [errorMessage, setErrorMessage] = useState('');
 
   
   const onDelete = (itemId) => {
+   
+    const userId = parseInt(localStorage.getItem("userId"));
+  const tableUserId = userToTable[selectedTable]?.user_id;
+
+  console.log(`Current User ID: ${userId} (type: ${typeof userId}), Table User ID: ${tableUserId} (type: ${typeof tableUserId}), Selected Table: ${selectedTable}`);
+
+  // Check if the current user is allowed to modify the order
+  if (tableUserId && userId !== tableUserId) {
+      console.error("You are not authorized to modify this order.");
+      setErrorMessage("Nuk jeni te lejuar te shtoni ne kete tavoline!");
+      setTimeout(() => setErrorMessage(''), 3000); // Hide after 5 seconds
+      return; // Exit the function if not authorized
+    }
     setOrderItems(prevItems => {
       const updatedItems = { ...prevItems };
       const tableId = selectedTable;
@@ -250,7 +306,8 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
 
   const createOrder = async (tableNumber) => {
     const currentTotalPrice = tableTotals[tableNumber] || 0; 
-    const userId = localStorage.getItem("userId");
+    const userId = parseInt(localStorage.getItem("userId"));
+
     if (!tableNumber) {
       console.error('Table ID not found for the selected table number');
       return;
@@ -338,21 +395,25 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
   </div>
       <MenuList onSubcategorySelect={setSelectedSubcategory} category={getCategoryFromSubcategory(selectedSubcategory)} onSearchInputChange={handleMenuSearchChange} searchInput={searchInput}   setSearchInput={setSearchInput}/>
       <div className="border-t border-gray-900"></div>{" "}
-      <MenuItemDetail searchInput={searchInput} category={getCategoryFromSubcategory(selectedSubcategory)}  subcategory={selectedSubcategory || autoSelectedSubcategory }  menuItems={menuItems} onAddToOrder={onAddToOrder} />
+      <MenuItemDetail 
+      searchInput={searchInput} 
+      category={getCategoryFromSubcategory(selectedSubcategory)}  
+      subcategory={selectedSubcategory || autoSelectedSubcategory }  
+      menuItems={menuItems} 
+      onAddToOrder={(item, userToTable)=> onAddToOrder(item, userToTable)} />
       <div className="border-t border-gray-900"></div>{" "}
       <OrderSummary
         orderItems={orderItems[selectedTable] || []} // Pass only the current table's orders 
         unpaidItemsDetails={unpaidItemsDetails}
-        onIncrement={(item) => onIncrement(item)}
-        onDecrement={(item) => onDecrement(item)}
-        onDelete={(item) => onDelete(item)}
+        onIncrement={(item, userToTable) => onIncrement(item, userToTable)}
+        onDecrement={(item, userToTable) => onDecrement(item, userToTable)}
+        onDelete={(item, userToTable) => onDelete(item, userToTable)}
         totalPrice={tableTotals[selectedTable]}   
         onCreateOrder={() => createOrder(selectedTable)}
         selectedTable={selectedTable}
         refreshUnpaidItems={refreshUnpaidItems}
         onResetTableTotals={() => resetTableTotal(selectedTable)}
         refreshTables={refreshTables}
-        setUserToTable={setUserToTable}
         />
     </div>
   );

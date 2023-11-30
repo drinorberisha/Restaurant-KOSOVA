@@ -17,6 +17,6 @@ export const tableTotalsSlice = createSlice({
   },
 });
 
-export const { updateTableTotals,updateTotals ,resetTotals} = tableTotalsSlice.actions;
 
+export const { updateTableTotals,updateTotals ,resetTotals} = tableTotalsSlice.actions;
 export default tableTotalsSlice.reducer;

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { markOrdersAsPaid, updateTableStatus } from "@/utils/api"; 
+import { useSelector} from 'react-redux';
 
 function OrderSummary({
   orderItems,
@@ -13,9 +14,10 @@ function OrderSummary({
   refreshUnpaidItems,
   onResetTableTotals,
   refreshTables,
-  setUserToTable
+
 }) {
 
+  const userToTable = useSelector(state => state.userTable);
 
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -114,14 +116,14 @@ function OrderSummary({
         <div key={index} className="text-white flex justify-between items-center py-1 border-b border-gray-300">
           {item.name} - {item.quantity} items - {item.price}€
           <div className="flex items-center justify-center">
-            <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onDecrement(item.item_id)}>
+            <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onDecrement(item.item_id, userToTable)}>
               -
             </button>
             <span className="align-middle mx-1">/</span>
-            <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onIncrement(item.item_id)}>
+            <button className="px-2 py-0.5 m-1 cursor-pointer text-lg" onClick={() => onIncrement(item.item_id, userToTable)}>
               +
             </button>
-            <button className="ml-2.5 bg-transparent border-none cursor-pointer text-lg text-red-500" onClick={() => onDelete(item.item_id)}>
+            <button className="ml-2.5 bg-transparent border-none cursor-pointer text-lg text-red-500" onClick={() => onDelete(item.item_id, userToTable)}>
               🗑️
             </button>
           </div>

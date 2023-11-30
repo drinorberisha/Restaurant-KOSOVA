@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useSelector} from 'react-redux';
 
 function MenuItemDetail({ category, subcategory, menuItems, onAddToOrder , searchInput}) {
   const [selectedType, setSelectedType] = useState(null);
+  const userToTable = useSelector(state => state.userTable);
 
   // useEffect(() => {
   //   setSelectedType(null);
