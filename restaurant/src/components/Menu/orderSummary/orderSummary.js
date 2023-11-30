@@ -195,7 +195,7 @@ function OrderSummary({
           <button
             className={`transition duration-300 ease-in-out border-2 mr-5 px-4 py-2 text-sm font-medium tracking-wide rounded-full ${
               totalOrder === "currentorder"
-                ? "bg-gray-300 bg-green-500"
+                ? "bg-green-500 border-black"
                 : "border-black"
             }`}
             onClick={currentOrderHandle}
@@ -205,7 +205,7 @@ function OrderSummary({
           <button
             className={`transition duration-300 ease-in-out border-2 px-4 py-2 text-sm font-medium tracking-wide rounded-full ${
               totalOrder === "totalorder"
-                ? "bg-gray-300 bg-green-500"
+                ? "bg-green-500 border-black"
                 : "border-black"
             }`}
             onClick={totalOrderHandle}
