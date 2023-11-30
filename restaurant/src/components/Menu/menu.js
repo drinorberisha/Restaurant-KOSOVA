@@ -14,6 +14,13 @@ const Menu = ({ selectedTable,  onOrderItemsChange, refreshTables, setUserToTabl
   const dispatch = useDispatch();
 console.log(selectedTable);
 
+
+
+const [errorMessage, setErrorMessage] = useState('');
+
+
+
+
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const [orderItems, setOrderItems] = useState({});
@@ -265,6 +272,7 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
       await refreshUnpaidItems();
       console.log("unpaidItemsDetails:",unpaidItemsDetails);
       await updateTableStatus(selectedTable, 'busy');
+      setErrorMessage(''); // Clear any previous error messages
 
       await refreshTables();
       setOrderItems(prevItems => {
@@ -276,7 +284,13 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
       // Display success message or handle UI updates
     } catch (error) {
       console.error('Error creating order:', error);
-      // Display error message or handle UI updates
+      if (error.response && error.response.status === 403) {
+        setErrorMessage(error.response.data.message);
+        setTimeout(() => setErrorMessage(''), 3000); // Hide after 5 seconds
+      } else {
+        setErrorMessage("An error occurred while processing your request.");
+        setTimeout(() => setErrorMessage(''), 3000); // Hide after 5 seconds
+      }
     }
 };
 
@@ -319,6 +333,9 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
 
   return (
     <div className="bg-gray-100 p-2.5 rounded-md h-full flex flex-col">
+       <div>
+    {errorMessage && <div className="error-message">{errorMessage}</div>}
+  </div>
       <MenuList onSubcategorySelect={setSelectedSubcategory} category={getCategoryFromSubcategory(selectedSubcategory)} onSearchInputChange={handleMenuSearchChange} searchInput={searchInput}   setSearchInput={setSearchInput}/>
       <div className="border-t border-gray-900"></div>{" "}
       <MenuItemDetail searchInput={searchInput} category={getCategoryFromSubcategory(selectedSubcategory)}  subcategory={selectedSubcategory || autoSelectedSubcategory }  menuItems={menuItems} onAddToOrder={onAddToOrder} />

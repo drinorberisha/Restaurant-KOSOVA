@@ -15,6 +15,10 @@ function OrderSummary({
   refreshTables,
   setUserToTable
 }) {
+
+
+  const [errorMessage, setErrorMessage] = useState('');
+
   const currentTableItems = Object.values(orderItems || {}).flat();
   const [totalOrder, setTotalOrder] = useState('currentorder');
   const handleCreateOrder = async () => {
@@ -39,13 +43,24 @@ function OrderSummary({
 
   
 
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   const handleMarkOrdersAsPaid = async () => {
     try {
+      const userId = localStorage.getItem("userId");
+
+      if (!userId) {
+        console.error("User ID not found");
+        return;
+      }
+
       await updateTableStatus(selectedTable, 'free');
 
-      const response = await markOrdersAsPaid(selectedTable);
+      const response = await markOrdersAsPaid(selectedTable, userId);
+
+  
       console.log("Orders marked as paid:", response);
+      setErrorMessage(''); // Clear any previous error messages
       await refreshTables();
       // Handle the response, e.g., update the UI or show a confirmation message
       await refreshUnpaidItems();
@@ -53,6 +68,14 @@ function OrderSummary({
       setTotalOrder('currentorder');
     } catch (error) {
       console.error("Error marking orders as paid:", error);
+      if (error.response && error.response.status === 403) {
+        setErrorMessage(error.response.data.message);
+        setTimeout(() => setErrorMessage(''), 3000); // Hide after 5 seconds
+        updateTableStatus(selectedTable, "busy");
+      } else {
+        setErrorMessage("An error occurred while processing your request.");
+        setTimeout(() => setErrorMessage(''), 3000); // Hide after 5 seconds
+      }
     }
   };
 
@@ -110,6 +133,10 @@ function OrderSummary({
 
   return (
     <div className="h-[40%] ">
+      <div>
+    {errorMessage && <div className="error-message">{errorMessage}</div>}
+  </div>
+
       <div className="flex flex-row justify-between"> 
         <p className="mr-5">Summary:</p>
         <div>

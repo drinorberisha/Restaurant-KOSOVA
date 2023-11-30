@@ -11,10 +11,21 @@ exports.createOrder = async (req, res) => {
             return res.status(400).json({ message: 'User ID is required' });
         }
 
+        // Check for existing order for the table
+        const currentOrder = await db('Orders')
+            .where({ table_id: tableId, paid: 0 })
+            .first();
+
+        if (currentOrder && currentOrder.user_id !== userId) {
+            // If there's an existing order by a different user, reject the creation
+            return res.status(403).json({ message: 'Kjo tavoline eshte e zene!' });
+        }
+
+        // Proceed to create a new order
         const newOrder = await db('Orders').insert({
             table_id: tableId,
             total_price: totalPrice,
-            user_id: userId,
+            user_id: userId
         });
 
         const orderId = newOrder[0];
@@ -39,20 +50,34 @@ exports.createOrder = async (req, res) => {
     }
 };
 
+
 exports.markOrdersAsPaid = async (req, res) => {
     try {
       const { tableId } = req.params;
-      // Update the Orders table to set paid status to 1 for the specified table's unpaid orders
+      const { userId } = req.body;
+  
+      // First, check if the user is associated with the unpaid orders
+      const orders = await db('Orders')
+        .where({ table_id: tableId, paid: 0, user_id: userId });
+  
+      if (orders.length === 0) {
+        return res.status(403).json({ message: 'Nuk mund te kryeni pagesen tek kjo tavoline!' });
+      }
+  
+      // Proceed to mark orders as paid
       await db('Orders')
         .where({ table_id: tableId, paid: 0 })
         .update({ paid: 1 });
+  
       await db('Tables').where('table_id', tableId).update({ current_order_id: null });
+  
       res.json({ message: 'Orders marked as paid successfully' });
     } catch (error) {
       console.error('Error marking orders as paid:', error);
       res.status(500).send('Internal Server Error');
     }
   };
+  
 
 
 exports.getUnpaidItems = async (req, res) => {
