@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { markOrdersAsPaid, updateTableStatus } from "@/utils/api"; 
 import { useSelector} from 'react-redux';
 
@@ -18,6 +18,7 @@ function OrderSummary({
 }) {
 
   const userToTable = useSelector(state => state.userTable);
+  const myTables = useSelector(state => state.myTables.tables); 
 
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -43,9 +44,17 @@ function OrderSummary({
     }, 0);
   };
 
-  
+  useEffect(() => {
+    // Check the status of the selectedTable and update totalOrder
+    const selectedTableStatus = myTables.find(table => table.table_id === selectedTable)?.status;
+    if (selectedTableStatus === 'free') {
+      setTotalOrder('currentorder');
+    } else {
+      setTotalOrder('totalorder');
+    }
+  }, [selectedTable, myTables]);
 
-  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  // const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   const handleMarkOrdersAsPaid = async () => {
     try {

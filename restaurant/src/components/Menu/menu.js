@@ -6,7 +6,7 @@ import { fetchInventoryItems, orderCreate, fetchUnpaidItems, updateTableStatus} 
 import { useSelector , useDispatch} from 'react-redux';
 import { updateTableTotals } from "../../../store/features/tableTotalsSlice";
 
-const Menu = ({ selectedTable,  onOrderItemsChange, refreshTables}) => {
+const Menu = ({ selectedTable, refreshTables}) => {
   const updateTotals = (updatedTotals) => {
     dispatch(updateTableTotals(updatedTotals));
   };
@@ -174,9 +174,7 @@ const [errorMessage, setErrorMessage] = useState('');
       );
       updateTotals({ ...newTableTotals, [tableId]: newTotal });
   
-      if (onOrderItemsChange) {
-        onOrderItemsChange(orderItems);
-      }
+      
       return updatedItems;
     });
   };
@@ -212,9 +210,7 @@ const [errorMessage, setErrorMessage] = useState('');
         updateTotals({ ...newTableTotals, [tableId]: newTotal });
         };
       
-      if (onOrderItemsChange) {
-        onOrderItemsChange(orderItems);
-      }
+    
       return updatedItems;
     });
   };
@@ -245,9 +241,7 @@ const [errorMessage, setErrorMessage] = useState('');
         const updatedTotal = calculateTotalPrice(updatedItems[selectedTable]);
         updateTotals({ ...newTableTotals, [selectedTable]: updatedTotal });
       }
-      if (onOrderItemsChange) {
-        onOrderItemsChange(orderItems);
-      }
+     
       return updatedItems;
     });
   };
@@ -280,9 +274,7 @@ const [errorMessage, setErrorMessage] = useState('');
         const updatedTotal = calculateTotalPrice(updatedItems[tableId]);
         updateTotals({ ...newTableTotals, [tableId]: updatedTotal });
       }
-      if (onOrderItemsChange) {
-        onOrderItemsChange(orderItems);
-      }
+     
       return updatedItems;
     });
   };

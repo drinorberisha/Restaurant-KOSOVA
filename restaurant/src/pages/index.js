@@ -9,6 +9,7 @@ import { fetchAllTables , getUserByTableId} from "@/utils/api";
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTableTotals } from "../../store/features/tableTotalsSlice";
 import { setUserTableMapping } from "../../store/features/userTableSlice";
+import { setTables } from "../../store/features/tableSlice";
 
 function Home() {
   const [selectedItem, setSelectedItem] = useState(menuItems[0]);
@@ -19,7 +20,7 @@ function Home() {
 
   // const [newTableTotals, setNewTableTotals] = useState({});
   const dispatch = useDispatch();
-
+  const myTables = useSelector(state => state.myTables.tables);
 
 
   const handleTableTotalsChange = (updatedTotals) => {
@@ -27,19 +28,13 @@ function Home() {
   };
   const newTableTotals = useSelector((state) => state.tableTotals);
 
-    const [tableOrders, setTableOrders] = useState({});
 
 
     const handleSelectTable = (tableNumber) => {
   
       setSelectedTable(tableNumber);
     };
-    const handleOrderItemsChange = (newOrderItems) => {
-      setTableOrders(prevOrders => ({
-        ...prevOrders,
-        [selectedTable]: newOrderItems
-      }));
-    };
+ 
 
     // const handleTableTotalsChange = (newTableTotals) => {
     //   setTableTotals(newTableTotals);
@@ -49,21 +44,14 @@ function Home() {
 
 
 
-    const [myTables, setMyTables] = useState(
-      new Array(32).fill(null).map((_, index) => ({
-        table_id: index + 1,
-        table_number: index + 1,
-        status: "free",
-        current_order_id: null
-      }))
-    );
+
     const refreshTables = async () => {
       try {
         console.log("Refreshing tables...");
         const fetchedTables = await fetchAllTables();
         console.log("Fetched tables:", fetchedTables);
-        setMyTables(fetchedTables);
-      } catch (error) {
+        dispatch(setTables(fetchedTables));
+        } catch (error) {
         console.error('Error fetching tables:', error);
       }
     };
@@ -128,7 +116,6 @@ function Home() {
           <Menu
             selectedTable={selectedTable}
             refreshTables={refreshTables}
-            onOrderItemsChange={handleOrderItemsChange}
             userToTable={userToTable}
 
           />
@@ -137,7 +124,6 @@ function Home() {
           <Tables
             selectedTable={selectedTable}
             onSelectTable={handleSelectTable}
-            myTables={myTables}
             userToTable={userToTable}
             
           />

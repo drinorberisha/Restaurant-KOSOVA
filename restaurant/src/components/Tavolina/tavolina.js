@@ -5,15 +5,15 @@ import backgroundImage from "../../../public/bg2.jpg";
 import Image from "next/image";
 import { useSelector } from 'react-redux'; // Import useSelector
 
-function Tables({ selectedTable, onSelectTable , myTables}) {
+function Tables({ selectedTable, onSelectTable}) {
   const [selectedPlacement, setSelectedPlacement] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedWaiter, setSelectedWaiter] = useState('all');
 
-  
-  const userToTable = useSelector(state => state.userTable);
 
-  const tableTotals = useSelector(state => state.tableTotals); // Access tableTotals from Redux
+  const userToTable = useSelector(state => state.userTable);
+  const myTables = useSelector(state => state.myTables.tables);
+  const tableTotals = useSelector(state => state.tableTotals); 
 
   const handlePlacementChange = (event) => {
     setSelectedPlacement(event.target.value);
