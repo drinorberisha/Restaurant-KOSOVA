@@ -134,7 +134,7 @@ function Tables({ selectedTable, onSelectTable }) {
 
       <div
         className="grid grid-cols-4 gap-5 p-5 overflow-y-auto bg-black bg-opacity-60"
-        style={{ height: "70vh" }}
+        style={{ maxHeight: "70vh" }}
       >
         {filteredTables && filteredTables.length > 0 ? (
           filteredTables.map((table) => {
