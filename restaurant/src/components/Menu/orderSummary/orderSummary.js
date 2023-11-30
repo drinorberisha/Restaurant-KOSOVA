@@ -108,13 +108,20 @@ function OrderSummary({
     }else{
       return (
         <div className="flex flex-row justify-between mt-2.5 font-bold">
-        <p className="mr-5">Total price: {totalPrice}€</p>
+        <p className="mr-5">Total price: {calculateCurrentOrderTotal()}€</p>
         <button className="pay-button" onClick={handleCreateOrder}>Shtyp Porosine</button>
       </div>
       )
 
     }
   }
+  const calculateCurrentOrderTotal = () => {
+    // Sum up the price for each item in the current order
+    return currentTableItems.reduce((total, item) => {
+      return total + (item.price * item.quantity);
+    }, 0);
+  };
+  
   const renderItems = () => {
     if (totalOrder === 'totalorder') {
       // Render details for unpaid items

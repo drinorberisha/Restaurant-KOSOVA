@@ -10,7 +10,6 @@ const Menu = ({ selectedTable, refreshTables}) => {
   const updateTotals = (updatedTotals) => {
     dispatch(updateTableTotals(updatedTotals));
   };
-  const tableTotals = useSelector(state => state.tableTotals);
   const dispatch = useDispatch();
 console.log(selectedTable);
 
@@ -26,7 +25,8 @@ const [successMessage, setSuccessMessage] = useState('');
   const [menuItems, setMenuItems] = useState([]);
   const [orderItems, setOrderItems] = useState({});
 
-  const newTableTotals = useSelector(state => state.newTableTotals);  
+  const tableTotals = useSelector(state => state.tableTotals);
+
   // const [tables, setTables] = useState(
   //   new Array(16).fill(null).map((_, index) => ({
   //     table_id: index + 1,
@@ -170,11 +170,12 @@ const [successMessage, setSuccessMessage] = useState('');
         quantity: currentQuantity + 1
       };
   
-      const newTotal = Object.values(updatedItems[tableId]).reduce(
-        (sum, currItem) => sum + (currItem.price * currItem.quantity),
-        0
-      );
-      updateTotals({ ...newTableTotals, [tableId]: newTotal });
+      // const newTotal = Object.values(updatedItems[tableId]).reduce(
+      //   (sum, currItem) => sum + (currItem.price * currItem.quantity),
+      //   0
+      // );
+      // const existingTotal = tableTotals[tableId] || 0;
+      // updateTotals({ ...tableTotals, [tableId]: existingTotal + newTotal });
   
       
       return updatedItems;
@@ -209,7 +210,7 @@ const [successMessage, setSuccessMessage] = useState('');
         console.log("Selected Table:", selectedTable);
         console.log("Order Items for Selected Table:", orderItems[selectedTable]);
         console.log("the calculation of total:",newTotal)
-        updateTotals({ ...newTableTotals, [tableId]: newTotal });
+        updateTotals({ ...tableTotals, [tableId]: newTotal });
         };
       
     
@@ -241,7 +242,7 @@ const [successMessage, setSuccessMessage] = useState('');
         
         // Update total price here
         const updatedTotal = calculateTotalPrice(updatedItems[selectedTable]);
-        updateTotals({ ...newTableTotals, [selectedTable]: updatedTotal });
+        updateTotals({ ...tableTotals, [selectedTable]: updatedTotal });
       }
      
       return updatedItems;
@@ -274,7 +275,7 @@ const [successMessage, setSuccessMessage] = useState('');
   
         // Update total price here
         const updatedTotal = calculateTotalPrice(updatedItems[tableId]);
-        updateTotals({ ...newTableTotals, [tableId]: updatedTotal });
+        updateTotals({ ...tableTotals, [tableId]: updatedTotal });
       }
      
       return updatedItems;
@@ -301,6 +302,7 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
   const createOrder = async (tableNumber) => {
     const currentTotalPrice = tableTotals[tableNumber] || 0; 
     const userId = parseInt(localStorage.getItem("userId"));
+    const tableId = selectedTable;
 
     if (!tableNumber) {
       console.error('Table ID not found for the selected table number');
@@ -325,12 +327,19 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
       await updateTableStatus(selectedTable, 'busy');
       setErrorMessage(''); // Clear any previous error messages
 
-      await refreshTables();
       setOrderItems(prevItems => {
         const updatedItems = { ...prevItems };
+        const newTotal = Object.values(updatedItems[tableId]).reduce(
+          (sum, currItem) => sum + (currItem.price * currItem.quantity),
+          0
+        );
+        const existingTotal = tableTotals[tableId] || 0;
+        updateTotals({ ...tableTotals, [tableId]: existingTotal + newTotal });
         delete updatedItems[tableNumber];
         return updatedItems;
       });
+      await refreshTables();
+
       setSuccessMessage("Porosia eshte shtypur me sukses");
       setTimeout(() => setSuccessMessage(''), 2000); 
       // Display success message or handle UI updates
@@ -359,7 +368,7 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
 
   const resetTableTotal = (tableId) => {
     console.log(`Resetting total for table ${tableId}`);
-    updateTotals({ ...newTableTotals, [tableId]: 0 });
+    updateTotals({ ...tableTotals, [tableId]: 0 });
   };
   
   //START  SEARCH INPUT
