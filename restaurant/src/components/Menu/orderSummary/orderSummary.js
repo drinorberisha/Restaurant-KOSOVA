@@ -24,8 +24,8 @@ function OrderSummary({
   const currentTableItems = Object.values(orderItems || {}).flat();
   const [totalOrder, setTotalOrder] = useState("currentorder");
   const handleCreateOrder = async () => {
-    setTotalOrder("totalorder");
-    await onCreateOrder();
+  setTotalOrder("totalorder");
+  await onCreateOrder();
   };
   const currentOrderHandle = () => {
     setTotalOrder("currentorder");

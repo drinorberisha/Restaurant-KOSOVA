@@ -313,6 +313,14 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
 
     if (!tableNumber) {
       console.error('Table ID not found for the selected table number');
+      setErrorMessage("Nuk mundem te gjejme Table ID per tavolinen e zgjedhur!!");
+      setTimeout(() => setErrorMessage(''), 3000); 
+      return;
+    }
+    if (!orderItems[tableNumber] || Object.keys(orderItems[tableNumber]).length === 0) {
+      // If no items are found, set an error message and exit the function
+      setErrorMessage("Fillimisht shtoni produktet, pastaj shtypni porosine!!");
+      setTimeout(() => setErrorMessage(''), 3000); 
       return;
     }
 
