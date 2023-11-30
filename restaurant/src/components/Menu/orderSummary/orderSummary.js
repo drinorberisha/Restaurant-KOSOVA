@@ -179,7 +179,7 @@ function OrderSummary({
   };
 
   return (
-    <div className="h-[45%] pt-1.5 ">
+    <div className="h-[46%] pt-1.5 ">
       <div>
         {errorMessage && <div className="error-message">{errorMessage}</div>}
       </div>
