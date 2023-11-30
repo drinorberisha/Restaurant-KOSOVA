@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { fetchInventoryItems } from "@/utils/api";
 
-function MenuList({ onSelectItem, onCategorySelect, onSubcategorySelect, category, onSearchInputChange, searchInput, setSearchInput}) {
+function MenuList({
+  onSelectItem,
+  onCategorySelect,
+  onSubcategorySelect,
+  category,
+  onSearchInputChange,
+  searchInput,
+  setSearchInput,
+}) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [wasUserSelected, setWasUserSelected] = useState(false);
   const [menuItems, setMenuItems] = useState([]);
@@ -9,7 +17,7 @@ function MenuList({ onSelectItem, onCategorySelect, onSubcategorySelect, categor
   const [filterSubcategory, setFilterSubcategory] = useState("All");
   const [uniqueSubcategories, setUniqueSubcategories] = useState([]);
 
-  // SEARCH INPUT 
+  // SEARCH INPUT
   const handleSearchChange = (e) => {
     onSearchInputChange(e.target.value);
     setWasUserSelected(false);
@@ -17,11 +25,7 @@ function MenuList({ onSelectItem, onCategorySelect, onSubcategorySelect, categor
     // Additional logic for auto-selecting subcategory, if applicable
   };
 
-
-
-  // END SEARCH INPUT 
-
-
+  // END SEARCH INPUT
 
   useEffect(() => {
     // Collect unique subcategories
@@ -34,25 +38,19 @@ function MenuList({ onSelectItem, onCategorySelect, onSubcategorySelect, categor
     setUniqueSubcategories(Array.from(subcategories));
   }, [menuItems, selectedCategory]);
 
-
-
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
 
-
   const handleSubcategoryClick = (subcategory) => {
-    setSearchInput(''); 
+    setSearchInput("");
     setSelectedSubcategory(subcategory);
     setWasUserSelected(true);
     onSubcategorySelect(subcategory);
-   
   };
 
   // const handleSearchChange = (e) => {
   //   setSearchInput(e.target.value);
   //   setWasUserSelected(false);
   // };
-
-
 
   // Subcategory mapping
   const subcategoryMapping = {
@@ -77,14 +75,12 @@ function MenuList({ onSelectItem, onCategorySelect, onSubcategorySelect, categor
     setWasUserSelected(false);
     setUniqueSubcategories(subcategoryMapping[category] || []);
     setFilterSubcategory("All");
-    setSelectedSubcategory('');
-
+    setSelectedSubcategory("");
   };
 
   const handleSubcategoryChange = (subcategory) => {
     setFilterSubcategory(subcategory);
   };
-
 
   const filteredMenuItems = menuItems.filter((item) => {
     const matchesCategory =
@@ -141,9 +137,9 @@ function MenuList({ onSelectItem, onCategorySelect, onSubcategorySelect, categor
     // Clear search input
     onSearchInputChange("");
     // Clear selected subcategory
-    onSubcategorySelect('');
-    setSelectedCategory("All"); 
-    setSelectedSubcategory('');
+    onSubcategorySelect("");
+    setSelectedCategory("All");
+    setSelectedSubcategory("");
     setUniqueSubcategories(subcategoryMapping["All"]);
   };
 
@@ -160,8 +156,11 @@ function MenuList({ onSelectItem, onCategorySelect, onSubcategorySelect, categor
           🔍
         </button>
       </div>
-      <div className="flex flex-row">
-        <div className="flex flex-col justify-center overflow-y-auto space-y-2 p-2  flex-grow-0">
+      <div className="flex flex-row flex-grow">
+        <div
+          className="flex flex-col justify-between overflow-y-auto space-y-2 p-2 flex-grow-0"
+          style={{ maxHeight: "calc(100% - 3.5rem)" }}
+        >
           <button
             className="bg-gray-200 hover:bg-gray-300 text-black font-semibold py-2 px-4 rounded-full"
             onClick={() => handleCategoryButtonClick("All")}
@@ -193,26 +192,33 @@ function MenuList({ onSelectItem, onCategorySelect, onSubcategorySelect, categor
             Clear
           </button>
         </div>
-        <div className="overflow-y-auto h-full">
-        {uniqueSubcategories.length > 0 ? (
-          <div className="grid grid-cols-5 gap-1.5 align-start h-3/4">
-            {uniqueSubcategories.map((subcategory) => (
-              <div
-                key={subcategory}
-                onClick={() => handleSubcategoryClick(subcategory)}
-                className={`p-2 cursor-pointer border border-gray-300 transition-all duration-300 rounded whitespace-nowrap overflow-hidden text-ellipsis h-14 ${
-                  selectedSubcategory === subcategory ? "bg-gray-200" : ""
-                }`}
-              >
-                <span>🍽️</span> {subcategory}
+        <div className="flex flex-col flex-grow">
+          <div
+            className="overflow-y-auto"
+            style={{ maxHeight: "calc(100% - 3.5rem)" }}
+          >
+            {uniqueSubcategories.length > 0 ? (
+              <div className="grid grid-cols-5 gap-1.5 p-2">
+                {uniqueSubcategories.map((subcategory) => (
+                  <button
+                    key={subcategory}
+                    onClick={() => handleSubcategoryClick(subcategory)}
+                    className={`p-2 cursor-pointer border border-gray-300 transition-all duration-300 rounded whitespace-nowrap overflow-hidden text-ellipsis ${
+                      selectedSubcategory === subcategory ? "bg-gray-200" : ""
+                    }`}
+                  >
+                    {subcategory}
+                  </button>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="text-center p-2">
+                No subcategories available ...
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="text-center">No subcategories available ...</div>
-        )}
+        </div>
       </div>
-    </div>
     </div>
   );
 }
