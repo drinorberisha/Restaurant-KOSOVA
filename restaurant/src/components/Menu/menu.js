@@ -14,7 +14,7 @@ const Menu = ({ selectedTable, refreshTables}) => {
 console.log(selectedTable);
 
 
-
+const [priceBeforeOrderCreated, setPriceBeforeOrderCreated] = useState();
 const [errorMessage, setErrorMessage] = useState('');
 const [successMessage, setSuccessMessage] = useState('');
 
@@ -169,19 +169,26 @@ const [successMessage, setSuccessMessage] = useState('');
         price: item.price,
         quantity: currentQuantity + 1
       };
-  
-      // const newTotal = Object.values(updatedItems[tableId]).reduce(
-      //   (sum, currItem) => sum + (currItem.price * currItem.quantity),
-      //   0
-      // );
+      
+      const newTotal = Object.values(updatedItems[tableId]).reduce(
+        (sum, currItem) => sum + (currItem.price * currItem.quantity),
+        0
+      );
+      setPriceBeforeOrderCreated(newTotal);
       // const existingTotal = tableTotals[tableId] || 0;
-      // updateTotals({ ...tableTotals, [tableId]: existingTotal + newTotal });
+
+      // if(tableTotals[tableId] !== 0){
+      //   updateTotals({ ...tableTotals, [tableId]: existingTotal + newTotal });
+      //   }else{
+        updateTotals({ ...tableTotals, [tableId]: newTotal });
+      //   }
+      
   
       
       return updatedItems;
     });
   };
-  
+
   
   const onIncrement = (itemId) => {
 
@@ -331,10 +338,11 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
         const updatedItems = { ...prevItems };
         const newTotal = Object.values(updatedItems[tableId]).reduce(
           (sum, currItem) => sum + (currItem.price * currItem.quantity),
-          0
+          0 
         );
-        const existingTotal = tableTotals[tableId] || 0;
-        updateTotals({ ...tableTotals, [tableId]: existingTotal + newTotal });
+        
+        const existingTotal = tableTotals[tableId] ;
+        updateTotals({ ...tableTotals, [tableId]:newTotal });
         delete updatedItems[tableNumber];
         return updatedItems;
       });

@@ -36,7 +36,7 @@ function OrderSummary({
   };
   const calculateTotalPrice = () => {
     return unpaidItemsDetails.reduce((total, item) => {
-      return total + item.price * item.quantity;
+      return total + (item.price * item.quantity);
     }, 0);
   };
 
@@ -130,7 +130,7 @@ function OrderSummary({
   const calculateCurrentOrderTotal = () => {
     // Sum up the price for each item in the current order
     return currentTableItems.reduce((total, item) => {
-      return total + item.price * item.quantity;
+      return total + (item.price * item.quantity);
     }, 0);
   };
 
