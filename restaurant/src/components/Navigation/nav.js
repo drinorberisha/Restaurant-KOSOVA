@@ -41,12 +41,20 @@ const Nav = () => {
     item.current = item.href === router.pathname;
   });
   const logoutFunc = () => {
+    // Clear local storage
     localStorage.setItem("isActive", false);
     localStorage.removeItem("userRole");
-    dispatch(resetTotals()); // Dispatch the reset action
-    router.push("/auth/login");
-    window.location.reload();
+  
+    // Reset table totals in Redux store
+    dispatch(resetTotals());
+  
+    // Short timeout to allow state update to propagate
+    setTimeout(() => {
+      // Navigate to login page
+      router.push("/auth/login");
+    }, 100); 
   };
+  
 
   return (
     <>

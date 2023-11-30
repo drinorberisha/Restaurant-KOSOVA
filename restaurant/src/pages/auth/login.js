@@ -7,7 +7,7 @@ import sticknote from "../../../public/sticknote.png"; // Import the sticknote.p
 import menuImage from "../../../public/menu.jpg"; // Import the menu.png image
 import { fetchUnpaidTableTotals, loginUser } from "@/utils/api";
 import { useDispatch } from 'react-redux';
-import { updateTotals } from "../../../store/features/tableTotalsSlice";
+import { updateTotals, updateTableTotals} from "../../../store/features/tableTotalsSlice";
 const LoginPage = () => {
   const [inputValue, setInputValue] = useState(""); 
   const router = useRouter();
@@ -22,10 +22,17 @@ const LoginPage = () => {
             localStorage.setItem("userId",response.user_id);
             localStorage.setItem("userRole",response.role);
             localStorage.setItem("isActive", true);
-            const totals = await fetchTableTotals();
-            dispatch(updateTotals(totals));
+        
+              console.log("BEFORE FETCHUNPAIDTABLETOTALS");
+
+              const response1 = await fetchUnpaidTableTotals();
+              console.log("AFTER FETCHUNPAIDTABLETOTALS");
+
+              console.log("TOTALS, TOTALS, TOTALS:", response1);
+              dispatch(updateTotals(response1));
+           
             router.push("/");
-            window.location.reload();
+            // window.location.reload();
 
           } else {
             console.log('Error:', response.message);
@@ -58,11 +65,10 @@ const LoginPage = () => {
       // Replace with your actual API call
       const response = await fetchUnpaidTableTotals();
       console.log("AFTER LOGIN, totals of unpaid orders:",response);
-      dispatch(updateTableTotals(totals));
-            return response.data;
+        return response;
     } catch (error) {
       console.error('Error fetching table totals:', error);
-      return {};
+      throw error;
     }
   };
   return (

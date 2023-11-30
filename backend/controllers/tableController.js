@@ -60,12 +60,13 @@ exports.calculateUnpaidTotals = async (req, res) => {
             .groupBy('table_id')
             .select('table_id')
             .sum('total_price as total');
-
+        console.log(results);
         // Now use reduce on the fetched results array
         const totals = results.reduce((acc, item) => {
             acc[item.table_id] = item.total;
             return acc;
         }, {});
+        console.log(totals);
 
         res.json(totals);
     } catch (error) {

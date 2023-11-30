@@ -38,9 +38,9 @@ function Tables({ selectedTable, onSelectTable , myTables, userToTable}) {
       // const placementMatch = selectedPlacement === 'all' || table.placement === selectedPlacement;
       // const statusMatch = selectedStatus === 'all' || table.status === selectedStatus;
       const waiterMatch = selectedWaiter === 'all' || (userToTable[table.table_id] && String(userToTable[table.table_id].user_id) === String(selectedWaiter));
-      console.log(`Table: ${table.table_id}, Waiter: ${userToTable[table.table_id]?.user_id}, Selected: ${selectedWaiter}, Match: ${waiterMatch}`);
+      // console.log(`Table: ${table.table_id}, Waiter: ${userToTable[table.table_id]?.user_id}, Selected: ${selectedWaiter}, Match: ${waiterMatch}`);
       // console.log("CHECKING HEREEEEEE:", userToTable[table.table_id].user_id);
-      console.log("waiterMatch", waiterMatch);
+      // console.log("waiterMatch", waiterMatch);
       return  waiterMatch;
     });
   };
