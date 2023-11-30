@@ -14,7 +14,7 @@ const Menu = ({ selectedTable, refreshTables}) => {
 console.log(selectedTable);
 
 
-
+const [priceBeforeOrderCreated, setPriceBeforeOrderCreated] = useState();
 const [errorMessage, setErrorMessage] = useState('');
 const [successMessage, setSuccessMessage] = useState('');
 
@@ -169,19 +169,26 @@ const [successMessage, setSuccessMessage] = useState('');
         price: item.price,
         quantity: currentQuantity + 1
       };
-  
-      // const newTotal = Object.values(updatedItems[tableId]).reduce(
-      //   (sum, currItem) => sum + (currItem.price * currItem.quantity),
-      //   0
-      // );
+      
+      const newTotal = Object.values(updatedItems[tableId]).reduce(
+        (sum, currItem) => sum + (currItem.price * currItem.quantity),
+        0
+      );
+      setPriceBeforeOrderCreated(newTotal);
       // const existingTotal = tableTotals[tableId] || 0;
-      // updateTotals({ ...tableTotals, [tableId]: existingTotal + newTotal });
+
+      // if(tableTotals[tableId] !== 0){
+      //   updateTotals({ ...tableTotals, [tableId]: existingTotal + newTotal });
+      //   }else{
+        updateTotals({ ...tableTotals, [tableId]: newTotal });
+      //   }
+      
   
       
       return updatedItems;
     });
   };
-  
+
   
   const onIncrement = (itemId) => {
 
@@ -306,6 +313,14 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
 
     if (!tableNumber) {
       console.error('Table ID not found for the selected table number');
+      setErrorMessage("Nuk mundem te gjejme Table ID per tavolinen e zgjedhur!!");
+      setTimeout(() => setErrorMessage(''), 3000); 
+      return;
+    }
+    if (!orderItems[tableNumber] || Object.keys(orderItems[tableNumber]).length === 0) {
+      // If no items are found, set an error message and exit the function
+      setErrorMessage("Fillimisht shtoni produktet, pastaj shtypni porosine!!");
+      setTimeout(() => setErrorMessage(''), 3000); 
       return;
     }
 
@@ -331,10 +346,11 @@ const [checkOrderItems, setCheckOrderItems] = useState([]);
         const updatedItems = { ...prevItems };
         const newTotal = Object.values(updatedItems[tableId]).reduce(
           (sum, currItem) => sum + (currItem.price * currItem.quantity),
-          0
+          0 
         );
-        const existingTotal = tableTotals[tableId] || 0;
-        updateTotals({ ...tableTotals, [tableId]: existingTotal + newTotal });
+        
+        const existingTotal = tableTotals[tableId] ;
+        updateTotals({ ...tableTotals, [tableId]:newTotal });
         delete updatedItems[tableNumber];
         return updatedItems;
       });
