@@ -273,7 +273,7 @@ const InventoryTable = () => {
 
       <div
         className="table-container"
-        style={{ height: '70vh', overflowY: 'auto' }}
+        style={{ height: '60vh', overflowY: 'auto' }}
       >
         <table className="border-collapse w-full" style={{ width: '135vh' }}>
           <thead>

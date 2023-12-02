@@ -133,7 +133,7 @@ const UserManagementTable = () => {
   return (
     <div
       className="table-container"
-      style={{ height: '80vh', overflowY: 'auto' }}
+      style={{ height: '70vh', overflowY: 'auto' }}
     >
       <table className="border-collapse w-full" style={{ width: '135vh' }}>
         <thead>
