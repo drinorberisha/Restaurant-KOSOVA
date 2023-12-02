@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import tableImage from "../../../public/Tables.png";
-import { fetchAllTableIds, fetchAllTables, fetchAllUsers } from "@/utils/api";
-import backgroundImage from "../../../public/bg2.jpg";
-import Image from "next/image";
-import { useSelector } from "react-redux"; // Import useSelector
+import React, { useEffect, useState } from 'react';
+import tableImage from '../../../public/Tables.png';
+import { fetchAllTableIds, fetchAllTables, fetchAllUsers } from '@/utils/api';
+import backgroundImage from '../../../public/bg2.jpg';
+import Image from 'next/image';
+import { useSelector } from 'react-redux'; // Import useSelector
 
 function Tables({ selectedTable, onSelectTable }) {
-  const [selectedPlacement, setSelectedPlacement] = useState("all");
-  const [selectedStatus, setSelectedStatus] = useState("all");
-  const [selectedWaiter, setSelectedWaiter] = useState("all");
+  const [selectedPlacement, setSelectedPlacement] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedWaiter, setSelectedWaiter] = useState('all');
 
   const userToTable = useSelector((state) => state.userTable);
   const myTables = useSelector((state) => state.myTables.tables);
@@ -30,8 +30,8 @@ function Tables({ selectedTable, onSelectTable }) {
     .filter((user) => user !== null && user !== undefined) // Ensure user is defined
     .map((user) => user.user_id)
     .filter((user_id, index, array) => array.indexOf(user_id) === index); // Remove duplicates
-  console.log("userToTable inside tables.js:", userToTable);
-  console.log("These are the waiter Ids", waiterIds);
+  console.log('userToTable inside tables.js:', userToTable);
+  console.log('These are the waiter Ids', waiterIds);
 
   // Combined filter function
   const filterTables = (tables) => {
@@ -39,7 +39,7 @@ function Tables({ selectedTable, onSelectTable }) {
       // const placementMatch = selectedPlacement === 'all' || table.placement === selectedPlacement;
       // const statusMatch = selectedStatus === 'all' || table.status === selectedStatus;
       const waiterMatch =
-        selectedWaiter === "all" ||
+        selectedWaiter === 'all' ||
         (userToTable[table.table_id] &&
           String(userToTable[table.table_id].user_id) ===
             String(selectedWaiter));
@@ -51,7 +51,7 @@ function Tables({ selectedTable, onSelectTable }) {
   };
   const filteredTables = filterTables(myTables);
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
   const searchFilter = (tables) => {
     return tables.filter((table) => {
@@ -60,9 +60,9 @@ function Tables({ selectedTable, onSelectTable }) {
   };
   // Combine this with the other filters
   const finalFilteredTables = searchFilter(filterTables(myTables));
-  console.log("Selected Waiter:", selectedWaiter);
-  console.log("User to Table Mapping:", userToTable);
-  console.log("Filtered Tables:", filterTables(myTables));
+  console.log('Selected Waiter:', selectedWaiter);
+  console.log('User to Table Mapping:', userToTable);
+  console.log('Filtered Tables:', filterTables(myTables));
 
   // waiters api call and array
   const [waiters, setWaiters] = useState([]);
@@ -71,21 +71,21 @@ function Tables({ selectedTable, onSelectTable }) {
     const fetchWaiters = async () => {
       try {
         const fetchedWaiters = await fetchAllUsers();
-        console.log("fetched users", fetchedWaiters);
+        console.log('fetched users', fetchedWaiters);
         setWaiters(fetchedWaiters);
       } catch (error) {
-        console.error("Error fetching waiters:", error);
+        console.error('Error fetching waiters:', error);
       }
     };
     fetchWaiters();
   }, []);
-  console.log("WAITERS:", waiters);
+  console.log('WAITERS:', waiters);
 
   const handleSelectTable = (tableNumber) => {
     onSelectTable(tableNumber);
   };
 
-  const tableGridHeight = "500px"; // Adjust this value based on your layout requirements
+  const tableGridHeight = '500px'; // Adjust this value based on your layout requirements
 
   return (
     <div className="flex flex-col h-full mt-[6.1%]">
@@ -134,25 +134,25 @@ function Tables({ selectedTable, onSelectTable }) {
 
       <div
         className="grid grid-cols-4 gap-5 p-5 overflow-y-auto bg-black bg-opacity-60"
-        style={{ maxHeight: "70vh" }}
+        style={{ height: '70vh' }}
       >
         {filteredTables && filteredTables.length > 0 ? (
           filteredTables.map((table) => {
             // Determine the class based on the table's status
             let tableClass =
               table.table_number === selectedTable
-                ? "text-black bg-gray-300" // Selected table
-                : "text-white"; // Unselected table
+                ? 'text-black bg-gray-300' // Selected table
+                : 'text-white'; // Unselected table
 
             // Additional styling for busy tables
-            if (table.status === "busy") {
-              tableClass += " bg-red-500"; // Busy: Red background
+            if (table.status === 'busy') {
+              tableClass += ' bg-red-500'; // Busy: Red background
             }
 
             return (
               <div
                 key={table.table_id}
-                className={`text-center rounded-lg p-1.5 ${tableClass}`}
+                className={`text-center rounded-lg max-h-40 p-1.5 ${tableClass}`}
                 onClick={() => handleSelectTable(table.table_number)}
               >
                 <Image
@@ -163,14 +163,14 @@ function Tables({ selectedTable, onSelectTable }) {
                   className="w-18 h-18 rounded-full mx-auto"
                 />
                 <div>
-                  Table {table.table_number} - Total:{" "}
+                  Table {table.table_number} - Total:{' '}
                   {tableTotals[table.table_id] || 0}€
                 </div>
                 <div>
-                  Waiter:{" "}
-                  {table.status === "busy"
-                    ? userToTable[table.table_id]?.username || "Error"
-                    : "Free"}
+                  Waiter:{' '}
+                  {table.status === 'busy'
+                    ? userToTable[table.table_id]?.username || 'Error'
+                    : 'Free'}
                 </div>
               </div>
             );
