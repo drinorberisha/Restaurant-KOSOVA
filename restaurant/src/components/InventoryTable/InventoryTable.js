@@ -1,36 +1,33 @@
-import React, { useState, useEffect } from "react";
-import AddProductForm from "./AddProductForm";
+import React, { useState, useEffect } from 'react';
+import AddProductForm from './AddProductForm';
 import {
   fetchInventoryItems,
   updateInventoryItem,
   updateMenuItem,
-} from "@/utils/api";
+} from '@/utils/api';
 
 const InventoryTable = () => {
   const [userRole, setUserRole] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false); // State to control form visibility
 
   const [inventoryItems, setInventoryItems] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterCategory, setFilterCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('All');
 
   const refreshProductList = async () => {
-    console.log("Refreshing product list...");
+    console.log('Refreshing product list...');
     const updatedItems = await fetchInventoryItems();
     setInventoryItems(updatedItems);
-    
   };
-
-
 
   useEffect(() => {
     const loadInventoryItems = async () => {
       try {
         const fetchedItems = await fetchInventoryItems();
-        console.log("Fetched items:", fetchedItems); // Log to check data
+        console.log('Fetched items:', fetchedItems); // Log to check data
         setInventoryItems(fetchedItems);
       } catch (error) {
-        console.error("Error fetching inventory items:", error);
+        console.error('Error fetching inventory items:', error);
         // Handle error (show error message, etc.)
       }
     };
@@ -40,13 +37,13 @@ const InventoryTable = () => {
 
   useEffect(() => {
     // Access localStorage only after the component has mounted
-    const storedUserRole = localStorage.getItem("userRole");
+    const storedUserRole = localStorage.getItem('userRole');
     setUserRole(storedUserRole);
   }, []);
 
   // Function to adjust stock
   const adjustStock = async (itemId, adjustment) => {
-    console.log("adjustStock called", itemId, adjustment); // Add this line
+    console.log('adjustStock called', itemId, adjustment); // Add this line
     const itemToUpdate = inventoryItems.find((item) => item.item_id === itemId);
     if (itemToUpdate) {
       const updatedCount = Math.max(itemToUpdate.current_count + adjustment, 0);
@@ -56,14 +53,14 @@ const InventoryTable = () => {
           current_count: updatedCount,
         });
         const fetchedItems = await fetchInventoryItems();
-        console.log("New Updated Fetched items:", fetchedItems); // Log to check data
+        console.log('New Updated Fetched items:', fetchedItems); // Log to check data
         // Update local state after successful API call
         // const updatedItems = inventoryItems.map(item =>
         //   item.item_id === itemId ? { ...item, currentCount: updatedCount } : item
         // );
         setInventoryItems(fetchedItems);
       } catch (error) {
-        console.error("Error updating inventory:", error);
+        console.error('Error updating inventory:', error);
         // Handle error (show error message, etc.)
       }
     }
@@ -81,7 +78,7 @@ const InventoryTable = () => {
   const canAdjustStock = () => {
     if (!userRole) return false;
     // Define which roles are allowed to adjust stock
-    const allowedRoles = ["manager", "admin"];
+    const allowedRoles = ['manager', 'admin'];
     return allowedRoles.includes(userRole);
   };
 
@@ -123,7 +120,7 @@ const InventoryTable = () => {
       // Exit editing mode
       setEditingItemId(null);
     } catch (error) {
-      console.error("Error updating item:", error);
+      console.error('Error updating item:', error);
       // Handle error (e.g., show an error message)
     }
   };
@@ -144,11 +141,11 @@ const InventoryTable = () => {
   //// EDITING FINISH
 
   ///// FILTER BEGIN
-  const [filterSubcategory, setFilterSubcategory] = useState("All");
+  const [filterSubcategory, setFilterSubcategory] = useState('All');
   const subcategoryMapping = {
-    Ushqim: ["Pizza", "Pasta", "Hamburger"],
-    Pije: ["Alkoolike", "JoAlkoolike", "Tea"],
-    Dessert: ["Torte", "Akullore", "Puding"],
+    Ushqim: ['Pizza', 'Pasta', 'Hamburger'],
+    Pije: ['Alkoolike', 'JoAlkoolike', 'Tea'],
+    Dessert: ['Torte', 'Akullore', 'Puding'],
     // Add more categories and subcategories as needed
   };
   const [availableSubcategories, setAvailableSubcategories] = useState([]);
@@ -157,7 +154,7 @@ const InventoryTable = () => {
     setFilterCategory(e.target.value);
     // Update available subcategories based on selected category
     setAvailableSubcategories(subcategoryMapping[e.target.value] || []);
-    setFilterSubcategory("All"); // Reset subcategory filter when category changes
+    setFilterSubcategory('All'); // Reset subcategory filter when category changes
   };
 
   const handleSubcategoryChange = (e) => {
@@ -165,50 +162,53 @@ const InventoryTable = () => {
   };
 
   const filteredItems = inventoryItems.filter((item) => {
-    console.log("Item:", item); // Log each item
+    console.log('Item:', item); // Log each item
     const matchesCategory =
-      filterCategory === "All" || item.category === filterCategory;
+      filterCategory === 'All' || item.category === filterCategory;
     const matchesSubcategory =
-      filterSubcategory === "All" || item.subcategory === filterSubcategory;
+      filterSubcategory === 'All' || item.subcategory === filterSubcategory;
     const matchesSearchTerm = item.item_name.toLowerCase().includes(searchTerm);
 
-    console.log("Matches Category:", matchesCategory);
-    console.log("Matches Subcategory:", matchesSubcategory);
-    console.log("Matches Search Term:", matchesSearchTerm);
+    console.log('Matches Category:', matchesCategory);
+    console.log('Matches Subcategory:', matchesSubcategory);
+    console.log('Matches Search Term:', matchesSearchTerm);
 
     return matchesCategory && matchesSubcategory && matchesSearchTerm;
   });
 
-  const renderTableCell = (item, fieldName, type = "text") => {
-    const cellStyle = "border px-0 py-0"; // Common cell styling
-    const inputStyle = "border-0 w-full h-full text-center"; // Input styling to fill the cell
-  
-    let content = editingItemId === item.item_id ? (
-      <input
-        type={type}
-        size={8}
-        name={fieldName}
-        value={editFormData[fieldName]}
-        onChange={handleEditFormChange}
-        className={`${inputStyle}`} // Apply input styles
-        style={{
-          maxWidth: '100%', // Ensures the input does not exceed the cell width
-          padding: '0px', // Matches the cell padding
-          lineHeight: '1.5', // Adjust line height to match non-editable cell content
-          boxSizing: 'border-box', // Include padding and border in the width and height
-        }}
-      />
-    ) : (
-      <span className="text-center block overflow-hidden overflow-ellipsis whitespace-nowrap">{item[fieldName]}</span> // Use block to fill the cell
-    );
-  
+  const renderTableCell = (item, fieldName, type = 'text') => {
+    const cellStyle = 'border border-gray-400 px-0 py-0'; // Common cell styling
+    const inputStyle = 'border-0 w-full h-full text-center'; // Input styling to fill the cell
+
+    let content =
+      editingItemId === item.item_id ? (
+        <input
+          type={type}
+          size={8}
+          name={fieldName}
+          value={editFormData[fieldName]}
+          onChange={handleEditFormChange}
+          className={`${inputStyle}`} // Apply input styles
+          style={{
+            maxWidth: '100%', // Ensures the input does not exceed the cell width
+            padding: '0px', // Matches the cell padding
+            lineHeight: '1.5', // Adjust line height to match non-editable cell content
+            boxSizing: 'border-box', // Include padding and border in the width and height
+          }}
+        />
+      ) : (
+        <span className="text-center block overflow-hidden overflow-ellipsis whitespace-nowrap">
+          {item[fieldName]}
+        </span> // Use block to fill the cell
+      );
+
     if (
-      fieldName === "current_count" &&
+      fieldName === 'current_count' &&
       canAdjustStock() &&
       editingItemId !== item.item_id
     ) {
       content = (
-        <div className="flex items-center justify-between h-full">
+        <div className="flex items-center text-center justify-between h-full">
           <span className="flex-grow">{item[fieldName]}</span>
           <div className="flex flex-row items-center justify-end">
             <button
@@ -227,10 +227,9 @@ const InventoryTable = () => {
         </div>
       );
     }
-  
+
     return <td className={`${cellStyle}`}>{content}</td>;
   };
-  
 
   ///// FILTER FINISH
 
@@ -242,11 +241,14 @@ const InventoryTable = () => {
             type="text"
             placeholder="Search items..."
             onChange={handleSearchChange}
-            className="w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md "
           />
         </div>
         <div className="flex-grow mx-2">
-          <select onChange={handleCategoryChange}>
+          <select
+            onChange={handleCategoryChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md "
+          >
             <option value="All">All Categories</option>
             <option value="Ushqim">Ushqim</option>
             <option value="Pije">Pije</option>
@@ -255,7 +257,10 @@ const InventoryTable = () => {
         </div>
 
         <div className="flex-grow mx-2">
-          <select onChange={handleSubcategoryChange}>
+          <select
+            onChange={handleSubcategoryChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md "
+          >
             <option value="All">All Subcategories</option>
             {availableSubcategories.map((subcategory) => (
               <option key={subcategory} value={subcategory}>
@@ -265,70 +270,86 @@ const InventoryTable = () => {
           </select>
         </div>
       </div>
-      <div className="table-container" style={{ height: '75vh', overflowY: 'auto' }}>
-      <table className="min-w-full table-fixed">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border">Item Name</th>
-            <th className="px-4 py-2 border">Category</th>
-            <th className="px-4 py-2 border">Subcategory</th>
-            <th className="px-4 py-2 border">Current Count</th>
-            <th className="px-4 py-2 border">Price</th>
-            <th className="px-4 py-2 border">Minimum Required</th>
-            <th className="px-4 py-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredItems.map((item) => (
-            <tr key={item.id} className={isStockLow(item) ? "bg-red-100" : ""}>
-              {renderTableCell(item, "item_name")}
-              {renderTableCell(item, "category")}
-              {renderTableCell(item, "subcategory")}
-              {renderTableCell(item, "current_count", "number")}
-              {renderTableCell(item, "minimum_required", "number")}
-              {renderTableCell(item, "price", "number")}
 
-              <td className="border px-4 py-2">
-                {editingItemId === item.item_id ? (
-                  <>
-                    <button
-                      className="border border-1 pr-4"
-                      onClick={handleFinishEdit}
-                    >
-                      Finish
-                    </button>
-                    <button
-                      className="border border-1 pr-4"
-                      onClick={handleCancelEdit}
-                    >
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className="border border-1 pr-4"
-                    onClick={() => handleEditClick(item)}
-                  >
-                    Edit
-                  </button>
-                )}
-              </td>
+      <div
+        className="table-container"
+        style={{ height: '70vh', overflowY: 'auto' }}
+      >
+        <table className="border-collapse w-full" style={{ width: '135vh' }}>
+          <thead>
+            <tr>
+              <th className="px-4 py-2 border border-gray-400">Item Name</th>
+              <th className="px-4 py-2 border border-gray-400">Category</th>
+              <th className="px-4 py-2 border border-gray-400">Subcategory</th>
+              <th className="px-4 py-2 border border-gray-400">
+                Current Count
+              </th>
+              <th className="px-4 py-2 border border-gray-400">Price</th>
+              <th className="px-4 py-2 border border-gray-400">
+                Minimum Required
+              </th>
+              <th className="px-4 py-2 border border-gray-400">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
+          </thead>
+          <tbody>
+            {filteredItems.map((item) => (
+              <tr
+                key={item.id}
+                className={isStockLow(item) ? 'bg-red-100' : ''}
+              >
+                {renderTableCell(item, 'item_name')}
+                {renderTableCell(item, 'category')}
+                {renderTableCell(item, 'subcategory')}
+                {renderTableCell(item, 'current_count', 'number')}
+                {renderTableCell(item, 'minimum_required', 'number')}
+                {renderTableCell(item, 'price', 'number')}
 
-      {userRole === "admin" && (
+                <td className="border border-gray-400 px-4 py-2">
+                  {editingItemId === item.item_id ? (
+                    <>
+                      <button
+                        className="border border-1 pr-4"
+                        onClick={handleFinishEdit}
+                      >
+                        Finish
+                      </button>
+                      <button
+                        className="border border-1 pr-4"
+                        onClick={handleCancelEdit}
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className="border border-1 pr-4"
+                      onClick={() => handleEditClick(item)}
+                    >
+                      Edit
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {userRole === 'admin' && (
         <button
           onClick={handleAddClick}
-          className="bg-blue-500 text-white p-2 mt-2 rounded"
+          className="bg-blue-500 text-white p-2 mb-1 mt-2 rounded"
         >
           Add New Product
         </button>
       )}
-
-      {showAddForm && <AddProductForm refreshProductList={refreshProductList} setShowAddForm={setShowAddForm} />}
+      {showAddForm ? (
+        <AddProductForm
+          refreshProductList={refreshProductList}
+          setShowAddForm={setShowAddForm}
+        />
+      ) : (
+        <div className="border-t border-gray-900"></div>
+      )}
     </>
   );
 };
