@@ -99,25 +99,55 @@ const UserManagementTable = () => {
     const cellStyle = 'border text-center border-gray-400 p-1';
     const inputStyle = 'w-full h-full text-center';
 
-    // If in edit mode, return an input field
+    // If in edit mode, return an input field or a select dropdown
     if (isEditing) {
-      return (
-        <td className={cellStyle}>
-          <input
-            type={field === 'password' ? 'number' : 'text'}
-            name={field}
-            value={editFormData[field]}
-            onChange={handleEditFormChange}
-            className={inputStyle}
-            style={{
-              maxWidth: '100%',
-              padding: '0',
-              lineHeight: '1.5',
-              boxSizing: 'border-box',
-            }}
-          />
-        </td>
-      );
+      // Check if the field should be a select dropdown
+      if (field === 'role' || field === 'status') {
+        let options;
+        if (field === 'role') {
+          // Define role options
+          options = ['admin', 'manager', 'waiter']; // Add more roles as needed
+        } else if (field === 'status') {
+          // Define status options
+          options = ['active', 'passive']; // Add more statuses as needed
+        }
+
+        return (
+          <td className={cellStyle}>
+            <select
+              name={field}
+              value={editFormData[field]}
+              onChange={handleEditFormChange}
+              className={inputStyle}
+            >
+              {options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </td>
+        );
+      } else {
+        // For other fields, use an input
+        return (
+          <td className={cellStyle}>
+            <input
+              type={field === 'password' ? 'number' : 'text'}
+              name={field}
+              value={editFormData[field]}
+              onChange={handleEditFormChange}
+              className={inputStyle}
+              style={{
+                maxWidth: '100%',
+                padding: '0',
+                lineHeight: '1.5',
+                boxSizing: 'border-box',
+              }}
+            />
+          </td>
+        );
+      }
     } else {
       // If not in edit mode, display the text
       return (
@@ -228,8 +258,18 @@ const UserManagementTable = () => {
           {passwordError && (
             <div className="error-message">{passwordError}</div>
           )}
-          <button className="rounded-full m-1 p-1.5 bg-blue-500 text-white" onClick={handleAddNewUser}>Register</button>
-          <button className="rounded-full p-1.5 bg-red-500 text-white" onClick={handleCancel}>Cancel</button>
+          <button
+            className="rounded-full m-1 p-1.5 bg-blue-500 text-white"
+            onClick={handleAddNewUser}
+          >
+            Register
+          </button>
+          <button
+            className="rounded-full p-1.5 bg-red-500 text-white"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
         </div>
       ) : (
         <div className="border-t border-gray-900"></div>

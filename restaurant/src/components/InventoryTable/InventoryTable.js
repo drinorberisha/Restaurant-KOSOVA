@@ -180,55 +180,90 @@ const InventoryTable = () => {
     const cellStyle = 'border border-gray-400 px-0 py-0'; // Common cell styling
     const inputStyle = 'border-0 w-full h-full text-center'; // Input styling to fill the cell
 
-    let content =
-      editingItemId === item.item_id ? (
-        <input
-          type={type}
-          size={8}
-          name={fieldName}
-          value={editFormData[fieldName]}
-          onChange={handleEditFormChange}
-          className={`${inputStyle}`} // Apply input styles
-          style={{
-            maxWidth: '100%', // Ensures the input does not exceed the cell width
-            padding: '0px', // Matches the cell padding
-            lineHeight: '1.5', // Adjust line height to match non-editable cell content
-            boxSizing: 'border-box', // Include padding and border in the width and height
-          }}
-        />
-      ) : (
-        <span className="text-center block overflow-hidden overflow-ellipsis whitespace-nowrap">
-          {item[fieldName]}
-        </span> // Use block to fill the cell
-      );
+    // Check if the current cell is being edited
+    const isEditingField = editingItemId === item.item_id;
 
-    if (
-      fieldName === 'current_count' &&
-      canAdjustStock() &&
-      editingItemId !== item.item_id
-    ) {
-      content = (
-        <div className="flex items-center text-center justify-between h-full">
-          <span className="flex-grow">{item[fieldName]}</span>
-          <div className="flex flex-row items-center justify-end">
-            <button
-              className="border mx-1 p-1"
-              onClick={() => adjustStock(item.item_id, 1)}
+    // Function to update subcategories when category changes
+    const handleCategoryChangeInEdit = (e) => {
+      // Update the category in the form data
+      const updatedFormData = { ...editFormData, category: e.target.value };
+
+      // Reset subcategory when category changes
+      updatedFormData.subcategory = 'All';
+
+      // Set the available subcategories based on the new category
+      setEditFormData(updatedFormData);
+    };
+
+    // Handle selects for category and subcategory fields
+    if (isEditingField) {
+      if (fieldName === 'category') {
+        const options = ['Ushqim', 'Pije', 'Dessert']; // Example categories
+        return (
+          <td className={cellStyle}>
+            <select
+              name={fieldName}
+              value={editFormData[fieldName]}
+              onChange={handleCategoryChangeInEdit} // Use the new handler here
+              className="w-full h-full text-center rounded-md border-0"
             >
-              +
-            </button>
-            <button
-              className="border mx-1 p-1"
-              onClick={() => adjustStock(item.item_id, -1)}
+              {options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </td>
+        );
+      } else if (fieldName === 'subcategory') {
+        // Use the category from editFormData to determine the available subcategories
+        const options = subcategoryMapping[editFormData.category] || [];
+        return (
+          <td className={cellStyle}>
+            <select
+              name={fieldName}
+              value={editFormData[fieldName]}
+              onChange={handleEditFormChange} // Keep using the existing form change handler
+              className="w-full h-full text-center rounded-md border-0"
             >
-              -
-            </button>
-          </div>
-        </div>
-      );
+              {options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </td>
+        );
+      } else {
+        // For other editable fields, render an input
+        return (
+          <td className={cellStyle}>
+            <input
+              type={type}
+              name={fieldName}
+              value={editFormData[fieldName]}
+              onChange={handleEditFormChange}
+              className={`${inputStyle}`}
+              style={{
+                maxWidth: '100%',
+                padding: '0px',
+                lineHeight: '1.5',
+                boxSizing: 'border-box',
+              }}
+            />
+          </td>
+        );
+      }
     }
 
-    return <td className={`${cellStyle}`}>{content}</td>;
+    // For non-editable cells, display the text
+    return (
+      <td className={cellStyle}>
+        <span className="block overflow-hidden overflow-ellipsis whitespace-nowrap">
+          {item[fieldName]}
+        </span>
+      </td>
+    );
   };
 
   ///// FILTER FINISH
