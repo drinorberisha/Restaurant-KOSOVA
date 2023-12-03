@@ -24,7 +24,7 @@ function OrderSummary({
   const currentTableItems = Object.values(orderItems || {}).flat();
   const [totalOrder, setTotalOrder] = useState('currentorder');
   const handleCreateOrder = async () => {
-    setTotalOrder("totalorder");
+    setTotalOrder('totalorder');
     await onCreateOrder();
   };
   const currentOrderHandle = () => {
@@ -36,7 +36,7 @@ function OrderSummary({
   };
   const calculateTotalPrice = () => {
     return unpaidItemsDetails.reduce((total, item) => {
-      return total + (item.price * item.quantity);
+      return total + item.price * item.quantity;
     }, 0);
   };
 
@@ -91,7 +91,7 @@ function OrderSummary({
 
   const priceAndButton = () => {
     const greenButtonClasses =
-      'bg-green-500 text-white font-bold py-1 px-2 rounded-full';
+      'bg-blue-500 text-white font-bold py-1 px-2 rounded-full';
     const redButtonClasses =
       'bg-red-500 text-white font-bold py-1 px-2 rounded-full';
 
@@ -130,7 +130,7 @@ function OrderSummary({
   const calculateCurrentOrderTotal = () => {
     // Sum up the price for each item in the current order
     return currentTableItems.reduce((total, item) => {
-      return total + (item.price * item.quantity);
+      return total + item.price * item.quantity;
     }, 0);
   };
 
@@ -195,7 +195,7 @@ function OrderSummary({
           <button
             className={`transition duration-300 ease-in-out border-2 mr-5 px-4 py-2 text-sm font-medium tracking-wide rounded-full ${
               totalOrder === 'currentorder'
-                ? 'bg-gray-500 border-black'
+                ? 'bg-blue-400 border-black'
                 : 'border-black'
             }`}
             onClick={currentOrderHandle}
@@ -205,7 +205,7 @@ function OrderSummary({
           <button
             className={`transition duration-300 ease-in-out border-2 px-4 py-2 text-sm font-medium tracking-wide rounded-full ${
               totalOrder === 'totalorder'
-                ? 'bg-gray-500 border-black'
+                ? 'bg-blue-400 border-black'
                 : 'border-black'
             }`}
             onClick={totalOrderHandle}
