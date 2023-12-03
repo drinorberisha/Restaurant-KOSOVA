@@ -177,7 +177,7 @@ const InventoryTable = () => {
   });
 
   const renderTableCell = (item, fieldName, type = 'text') => {
-    const cellStyle = 'border border-gray-400 px-0 py-0'; // Common cell styling
+    const cellStyle = 'border border-gray-400 text-center px-0 py-0'; // Common cell styling
     const inputStyle = 'border-0 w-full h-full text-center'; // Input styling to fill the cell
 
     // Check if the current cell is being edited
