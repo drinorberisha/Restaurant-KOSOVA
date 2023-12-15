@@ -117,7 +117,6 @@ function Home() {
             selectedTable={selectedTable}
             refreshTables={refreshTables}
             userToTable={userToTable}
-
           />
         </div>
         <div className="rounded-lg h-full">

@@ -11,14 +11,12 @@ const Menu = ({ selectedTable, refreshTables}) => {
     dispatch(updateTableTotals(updatedTotals));
   };
   const dispatch = useDispatch();
-console.log(selectedTable);
+  console.log(selectedTable);
 
 
 const [priceBeforeOrderCreated, setPriceBeforeOrderCreated] = useState();
 const [errorMessage, setErrorMessage] = useState('');
 const [successMessage, setSuccessMessage] = useState('');
-
-
 
 
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
@@ -174,13 +172,16 @@ const [successMessage, setSuccessMessage] = useState('');
         (sum, currItem) => sum + (currItem.price * currItem.quantity),
         0
       );
+    
       setPriceBeforeOrderCreated(newTotal);
       // const existingTotal = tableTotals[tableId] || 0;
 
       // if(tableTotals[tableId] !== 0){
       //   updateTotals({ ...tableTotals, [tableId]: existingTotal + newTotal });
       //   }else{
-        updateTotals({ ...tableTotals, [tableId]: newTotal });
+
+        const updatedTotal = calculateTotalPrice(updatedItems[tableId]);
+        updateTotals({ ...tableTotals, [tableId]: updatedTotal });
       //   }
       
   
