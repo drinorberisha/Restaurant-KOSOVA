@@ -24,6 +24,9 @@ app.use('/api', userRoutes);
 app.use('/api', inventoryRoutes);
 app.use('/api', orderRoutes);
 app.use('/api', tableRoutes);
+app.use("/", function(req, res) {
+  res.send("server  is running !");
+});
 
 
 
