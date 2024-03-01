@@ -1,0 +1,17 @@
+{
+  "name": "restaurant-KOSOVA", 
+  "version": "1.0.0",
+  "description": "My project combining frontend and backend",
+  "private": true,
+  "workspaces": [ 
+    "restaurant",  
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix restaurant\" \"npm run dev --prefix backend\"",
+    "start": "concurrently \"npm run start --prefix frontend\" \"npm run dev --prefix backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.8.0" 
+  }
+}
