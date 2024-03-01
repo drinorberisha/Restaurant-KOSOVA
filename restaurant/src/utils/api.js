@@ -1,7 +1,9 @@
 import axios from "axios";
 
-const backendUrl = "https://restaurant-kosova-server.vercel.app";
-
+const isDevelopment = process.env.NODE_ENV === 'development';
+const backendUrl = isDevelopment 
+    ? 'http://localhost:3010' // Your development backend URL
+    : 'https://restaurant-kosova-server.vercel.app';
 export const apiCall = async (
   endpoint,
   subEndpoint,

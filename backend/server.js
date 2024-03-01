@@ -9,9 +9,15 @@ const tableRoutes = require ('./routes/tableRoutes');
 const db = require('./models/db'); 
 
 const app = express();
-
+const allowedOrigins = ['http://localhost:3000', 'https://restaurant-kosova.vercel.app']; // adjust as needed 
 const corsOptions = {
-  origin: 'https://restaurant-kosova.vercel.app', // Replace with the origin of your frontend
+  origin: (origin, callback) => {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) { // Allow requests without an 'origin' header (like mobile apps, etc.)
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // Allow sending of cookies and authentication headers
   optionsSuccessStatus: 204
