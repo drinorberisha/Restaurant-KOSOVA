@@ -41,13 +41,7 @@ npm install --prefix restaurant
 npm install --prefix backend
 
 ## Running the Development Servers
-
-Option 1: Running concurrently
-
-    Start both frontend and backend development servers in a single command: 
-    npm run dev 
-
-Option 2: Running manually in separate terminals  
+    Running manually in separate terminals  
     Start the backend (open a new terminal):
     cd backend
     npm run dev
