@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const backendUrl = "https://restaurant-kosova-server.vercel.app/";
+const backendUrl = "https://restaurant-kosova-server.vercel.app";
 
 export const apiCall = async (
   endpoint,
