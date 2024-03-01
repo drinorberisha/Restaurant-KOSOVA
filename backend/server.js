@@ -5,9 +5,11 @@ const userRoutes = require('./routes/userRoutes');
 const inventoryRoutes = require('./routes/inventoryRoutes');
 const orderRoutes = require ('./routes/orderRoutes');
 const tableRoutes = require ('./routes/tableRoutes');
+const path = require('path');  // Import the path module
 
 const db = require('./models/db'); 
-
+console.log("Current Working Directory:", process.cwd()); 
+console.log("Resolved database path:", path.resolve(__dirname, './restaurant-Kosova.db'));
 const app = express();
 const allowedOrigins = ['http://localhost:3000', 'https://restaurant-kosova.vercel.app']; // adjust as needed 
 const corsOptions = {
