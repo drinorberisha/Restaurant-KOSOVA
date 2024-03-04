@@ -22,6 +22,7 @@ const LoginPage = () => {
             localStorage.setItem("accessToken", response.accessToken); // Save the JWT token
             localStorage.setItem("userId",response.user_id);
             localStorage.setItem("userRole",response.role);
+            localStorage.setItem("username",response.username);
         
               console.log("BEFORE FETCHUNPAIDTABLETOTALS");
 
