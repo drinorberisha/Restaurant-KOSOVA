@@ -30,10 +30,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
-app.use('/api', authenticateToken, userRoutes);
-app.use('/api', authenticateToken, inventoryRoutes);
-app.use('/api', authenticateToken, orderRoutes);
-app.use('/api', authenticateToken, tableRoutes);
+app.use('/api',  userRoutes);
+app.use('/api',  inventoryRoutes);
+app.use('/api',  orderRoutes);
+app.use('/api',  tableRoutes);
 
 //public route
 app.post('/api/check-password', userController.checkPassword);
