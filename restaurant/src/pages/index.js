@@ -20,7 +20,7 @@ function Home() {
     // Check if there is a token stored, and if not, redirect to login page
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      router.push('/login'); // Assuming your login route is '/login'
+      router.push('/auth/login'); // Assuming your login route is '/login'
     }
     // Include other initial fetches or setups here
     refreshTables();
