@@ -6,31 +6,34 @@ const saltRounds = 10;
 
 exports.checkPassword = async (req, res) => {
   try {
-      const { username, password } = req.body;
+      const { password } = req.body;
 
-      const query = `SELECT * FROM users WHERE username = $1;`;
-      const { rows } = await db.query(query, [username]);
+      // Fetch all hashed passwords from the database (Not recommended for real applications)
+      const query = `SELECT * FROM users;`;
+      const { rows } = await db.query(query);
 
-      if (rows.length === 0) {
-          return res.status(400).json({ message: 'User not found' });
+      // Attempt to find a user with a matching password
+      let userMatch = null;
+      for (let user of rows) {
+          const match = await bcrypt.compare(password, user.password);
+          if (match) {
+              userMatch = user;
+              break;
+          }
       }
 
-      const user = rows[0];
-
-      // Compare the provided password with the hashed password in the database
-      const match = await bcrypt.compare(password, user.password);
-
-      if (!match) { 
+      if (!userMatch) {
           return res.status(400).json({ message: 'Incorrect password' });
       }
 
-      const { password: _, ...userWithoutPassword } = user; // Exclude password from user object
+      const { password: _, ...userWithoutPassword } = userMatch; // Exclude password from user object
       return res.status(200).json(userWithoutPassword);
   } catch (error) {
       console.error(error);
       return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 exports.getUsers = async (req, res) => {
   try {
