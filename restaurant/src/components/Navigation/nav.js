@@ -46,6 +46,8 @@ const Nav = () => {
     // Clear local storage
     localStorage.setItem("isActive", false);
     localStorage.removeItem("userRole");
+    localStorage.removeItem("accessToken");
+
   
     // Reset table totals in Redux store
     dispatch(resetTotals());
