@@ -14,7 +14,7 @@ exports.checkPassword = async (req, res) => {
 
     let userMatch = null;
     for (let user of rows) {
-      const match = await bcrypt.compare(password, user.password);
+      const match = await bcrypt.compare(password, user.Password);
       if (match) {
         userMatch = user;
         break;
