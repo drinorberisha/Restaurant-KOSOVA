@@ -1,13 +1,14 @@
-// database.js
 
-const knex = require('knex');
+const pg = require('pg');
+require('dotenv').config();
 
-const db = knex({
-    client: 'sqlite3',
-    connection: {
-        filename: "./restaurant-Kosova.db"
-    },
-    useNullAsDefault: true
+const { Pool } = pg;
+
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
 });
 
-module.exports = db;
+
+module.exports = {
+    query: (text, params, callback) => pool.query(text, params, callback),
+  };
