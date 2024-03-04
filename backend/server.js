@@ -36,7 +36,7 @@ app.use('/api', orderRoutes);
 app.use('/api', tableRoutes);
 
 //public route
-app.post('api/check-password', userController.checkPassword);
+app.post('/api/check-password', userController.checkPassword);
 
 
 app.use("/", function(req, res) {
