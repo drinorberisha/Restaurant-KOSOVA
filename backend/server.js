@@ -6,6 +6,7 @@ const inventoryRoutes = require('./routes/inventoryRoutes');
 const orderRoutes = require ('./routes/orderRoutes');
 const tableRoutes = require ('./routes/tableRoutes');
 const path = require('path');  // Import the path module
+const userController = require('./controllers/userController');
 
 const authenticateToken = require('./middleware/authenticateToken');
 
