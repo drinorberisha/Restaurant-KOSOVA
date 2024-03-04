@@ -9,13 +9,13 @@ export const apiCall = async (
   subEndpoint,
   method,
   data = null,
-  token = null
 ) => {
   const url = `${backendUrl}/api/${endpoint}/${subEndpoint}`;
   console.log("Constructed URL:", url);
   const headers = {
     "Content-Type": "application/json",
   };
+  const token = localStorage.getItem('accessToken');
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }

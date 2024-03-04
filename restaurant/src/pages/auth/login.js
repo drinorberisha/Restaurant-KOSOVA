@@ -17,11 +17,11 @@ const LoginPage = () => {
     try {
         const response = await loginUser(password);
         console.log(response);
-        if (response && response.role){
+        if (response && response.accessToken){
             console.log('Password is correct');
+            localStorage.setItem("accessToken", response.accessToken); // Save the JWT token
             localStorage.setItem("userId",response.user_id);
             localStorage.setItem("userRole",response.role);
-            localStorage.setItem("isActive", true);
         
               console.log("BEFORE FETCHUNPAIDTABLETOTALS");
 

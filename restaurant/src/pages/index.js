@@ -5,6 +5,7 @@ import  {menuItems} from "../components/Menu/items";
 import Tables from "../components/Tavolina/tavolina";
 import Nav from "../components/Navigation/nav";
 import Menu from "../components/Menu/menu";
+import { useRouter } from 'next/router';
 import { fetchAllTables , getUserByTableId} from "@/utils/api";
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTableTotals } from "../../store/features/tableTotalsSlice";
@@ -12,9 +13,22 @@ import { setUserTableMapping } from "../../store/features/userTableSlice";
 import { setTables } from "../../store/features/tableSlice";
 
 function Home() {
-  const [selectedItem, setSelectedItem] = useState(menuItems[0]);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check if there is a token stored, and if not, redirect to login page
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      router.push('/login'); // Assuming your login route is '/login'
+    }
+    // Include other initial fetches or setups here
+    refreshTables();
+  }, [router]);
+
+
+
   const initialOrders = new Array(16).fill([]).map(() => []);
-  const [orderSummaries, setOrderSummaries] = useState(initialOrders);
 
   const [selectedTable, setSelectedTable] = useState(1);
 
@@ -35,15 +49,6 @@ function Home() {
       setSelectedTable(tableNumber);
     };
  
-
-    // const handleTableTotalsChange = (newTableTotals) => {
-    //   setTableTotals(newTableTotals);
-    // };
-
-
-
-
-
 
     const refreshTables = async () => {
       try {

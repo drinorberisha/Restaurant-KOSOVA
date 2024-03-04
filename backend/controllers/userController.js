@@ -2,35 +2,38 @@ const dbuser = require('../models/userModel');
 const db = require('../models/db'); // Adjust the path if necessary
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
 
 
 exports.checkPassword = async (req, res) => {
   try {
-      const { password } = req.body;
+    const { password } = req.body;
 
-      // Fetch all hashed passwords from the database (Not recommended for real applications)
-      const query = `SELECT * FROM users;`;
-      const { rows } = await db.query(query);
+    const query = `SELECT * FROM users;`;
+    const { rows } = await db.query(query);
 
-      // Attempt to find a user with a matching password
-      let userMatch = null;
-      for (let user of rows) {
-          const match = await bcrypt.compare(password, user.password);
-          if (match) {
-              userMatch = user;
-              break;
-          }
+    let userMatch = null;
+    for (let user of rows) {
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        userMatch = user;
+        break;
       }
+    }
 
-      if (!userMatch) {
-          return res.status(400).json({ message: 'Incorrect password' });
-      }
+    if (!userMatch) {
+      return res.status(400).json({ message: 'Incorrect password' });
+    }
 
-      const { password: _, ...userWithoutPassword } = userMatch; // Exclude password from user object
-      return res.status(200).json(userWithoutPassword);
+    // If a matching user is found, generate JWT token
+    const accessToken = jwt.sign({ userId: userMatch.user_id, role: userMatch.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+
+    // Exclude password from user object
+    const { password: _, ...userWithoutPassword } = userMatch;
+    return res.status(200).json({ ...userWithoutPassword, accessToken });
   } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
