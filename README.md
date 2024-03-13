@@ -20,7 +20,7 @@ This project provides a comprehensive ordering system designed for restaurants a
 
     Frontend: Next.js (React-based framework)
     Backend: Node.js with Express.js
-    Database: SQLite
+    Database: PostgreSQL
 
 ## Getting Started
 
@@ -57,8 +57,7 @@ Open http://localhost:3000 in your browser (the frontend typically runs on port 
 
 ## Database Setup
 
-    A SQLite database file will be created automatically (if it doesn't exist) in the configured location.
-    Refer to the backend documentation or configuration for how to connect to the database.
+    A You will interact with the live version of the database, or create a new PostgreSQL database locally and change the .env POSTGRES_URL to the server of the database.
 
 ## Admin Access
 
